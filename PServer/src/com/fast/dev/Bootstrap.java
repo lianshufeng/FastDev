@@ -27,11 +27,13 @@ public class Bootstrap implements WebApplicationInitializer {
 
 	@Override
 	public void onStartup(ServletContext appContext) throws ServletException {
-		// 初始化资源
-		ResourcesInit.init(appContext.getRealPath("/"));
+		// 扫描的包名
+		String packageName = this.getClass().getPackage().getName();
+		// // 初始化资源
+		ResourcesInit.init(appContext.getRealPath("/"), packageName);
 		// 配置spring
 		AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
-		applicationContext.scan(this.getClass().getPackage().getName());
+		applicationContext.scan(packageName);
 		// 添加上下文监听
 		appContext.addListener(new ContextLoaderListener(applicationContext));
 		// 初始化默认的 Dispatcher
