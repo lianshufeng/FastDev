@@ -1,0 +1,4 @@
+//定义返回对象
+def map = [:]; 
+map['_startTime']=new Date().getTime();
+return map;
