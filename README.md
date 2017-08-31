@@ -1,39 +1,39 @@
-# FastDev
-»ùÓÚ Spring mvc 4 µÄ¼Ü¹¹ , ÕæÕıÁãÅäÖÃµÄ¿ìËÙ¿ª·¢¿ò¼Ü¡£
+# å¿«é€Ÿå¼€å‘æ¡†æ¶
+####åŸºäº Spring mvc 4 çš„æ¶æ„ , çœŸæ­£é›¶é…ç½®çš„å¿«é€Ÿå¼€å‘æ¡†æ¶ã€‚
 
-½¨Òé»·¾³: 
-    JDK 1.8   eclipse   tomcat 8.0 
+####å»ºè®®ç¯å¢ƒ: 
+    ##JDK 1.8   eclipse   tomcat 8.0 
 
-»·¾³µØÖ·£º
-    jdk: 
+####ç¯å¢ƒåœ°å€ï¼š
+    ###jdk: 
         http://www.oracle.com/technetwork/java/javase/downloads/index.html
-    eclipse:
+    ###eclipse:
         https://www.eclipse.org/downloads/
-    tomcat:
+    ###tomcat:
         http://tomcat.apache.org/
-    git:
+    ###git:
         http://git-scm.com/downloads
-    TortoiseGit:
+    ###TortoiseGit:
         https://tortoisegit.org/
         
         
 
-maven¾µÏñ : 
+mavené•œåƒ : 
     http://maven.aliyun.com/nexus/content/groups/public/
 
-ÏîÄ¿ÃèÊö£º
+é¡¹ç›®æè¿°ï¼š
     
-    ×ñÑ­Spring¹æ·¶,ÓÉmaven½øĞĞÏîÄ¿¹ÜÀí,½«×ÊÔ´(html,css,js,jar µÈ)´ò°üµ½jar°üÖĞ£¬ÔÚ×öÔöÁ¿¸üĞÂÖ»ĞèÌæ»»Õû¸öjar°ü¼´¿É¡£
-    ºËĞÄÏîÄ¿£º
-        PServer(Web»·¾³) + PCore (ºËĞÄ¹¦ÄÜ¿é£¬ËùÓĞÄ£¿éÒıÓÃ¸ÃÄ£¿é) + PParent (ÏîÄ¿ºËĞÄÒÀÀµ°ü¡¢×Ö·û±àÂë¼°JDK°æ±¾£¬ËùÓĞÄ£¿éµÄ¸¸ÏîÄ¿) 
-    Ä£¿éÏîÄ¿£º
-        Restfull+Ä£°æÒıÇæ(freemark,groovymark,thymeleaf,velocity)¡¢Êı¾İ¿âÁ¬½Ó³Ø¡¢NoSql(Mongo)¡¢WebService(Hessian) µÈ...      
-        ËùÓĞÒÀÀµ°ü¾ùÔÚÄ£¿éÄÚµÄpomÖĞÉêÃ÷£¬²»ñîºÏºËĞÄÏîÄ¿.
+    éµå¾ªSpringè§„èŒƒ,ç”±mavenè¿›è¡Œé¡¹ç›®ç®¡ç†,å°†èµ„æº(html,css,js,jar ç­‰)æ‰“åŒ…åˆ°jaråŒ…ä¸­ï¼Œåœ¨åšå¢é‡æ›´æ–°åªéœ€æ›¿æ¢æ•´ä¸ªjaråŒ…å³å¯ã€‚
+    æ ¸å¿ƒé¡¹ç›®ï¼š
+        PServer(Webç¯å¢ƒ) + PCore (æ ¸å¿ƒåŠŸèƒ½å—ï¼Œæ‰€æœ‰æ¨¡å—å¼•ç”¨è¯¥æ¨¡å—) + PParent (é¡¹ç›®æ ¸å¿ƒä¾èµ–åŒ…ã€å­—ç¬¦ç¼–ç åŠJDKç‰ˆæœ¬ï¼Œæ‰€æœ‰æ¨¡å—çš„çˆ¶é¡¹ç›®) 
+    æ¨¡å—é¡¹ç›®ï¼š
+        Restfull+æ¨¡ç‰ˆå¼•æ“(freemark,groovymark,thymeleaf,velocity)ã€æ•°æ®åº“è¿æ¥æ± ã€NoSql(Mongo)ã€WebService(Hessian) ç­‰...      
+        æ‰€æœ‰ä¾èµ–åŒ…å‡åœ¨æ¨¡å—å†…çš„pomä¸­ç”³æ˜ï¼Œä¸è€¦åˆæ ¸å¿ƒé¡¹ç›®.
         
-        ¸ü¶àºóĞø»¹ÔÚ³ÖĞøÌí¼ÓÖĞ...
+        æ›´å¤šåç»­è¿˜åœ¨æŒç»­æ·»åŠ ä¸­...
 
-Àı×Ó:
-    Example-TemplateMark : Ä£°æÒıÇæ
+ä¾‹å­:
+    Example-TemplateMark : æ¨¡ç‰ˆå¼•æ“
     
     
 
