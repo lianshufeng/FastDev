@@ -1,0 +1,9 @@
+root			:	/							[Skip]
+classes		:	/WEB-INF/classes	[Skip]
+lib				:	/WEB-INF/lib			[Override]		
+views		:	/WEB-INF/views	[Override]		JspView
+ftl				:	/WEB-INF/ftl			[Override]		freeMark
+gtl			:	/WEB-INF/gtl		[Override]		groovyMark
+vtl				:	/WEB-INF/vtl			[Override]		velocityMark
+htl			:	/WEB-INF/htl			[Override]		thymeleafMark
+resources	:	/resources			[Override]
