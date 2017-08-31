@@ -2,7 +2,7 @@
 #### 基于 Spring mvc 4 的架构 , 真正零配置的快速开发框架。
 
 #### 建议环境: 
-    ## JDK 1.8   eclipse   tomcat 8.0 
+    JDK 1.8   eclipse   tomcat 8.0 
 
 #### 环境地址：
     jdk: 
