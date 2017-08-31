@@ -5,15 +5,15 @@
     ## JDK 1.8   eclipse   tomcat 8.0 
 
 #### 环境地址：
-    ### jdk: 
+    jdk: 
         http://www.oracle.com/technetwork/java/javase/downloads/index.html
-    ### eclipse:
+    eclipse:
         https://www.eclipse.org/downloads/
-    ### tomcat:
+    tomcat:
         http://tomcat.apache.org/
-    ### git:
+    git:
         http://git-scm.com/downloads
-    ### TortoiseGit:
+    TortoiseGit:
         https://tortoisegit.org/
         
         
