@@ -1,4 +1,4 @@
-package com.fast.dev.core.util.res;
+package com.fast.dev.core.res;
 
 /**
  * 解压类型

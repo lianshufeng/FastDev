@@ -7,8 +7,8 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.fast.dev.core.util.res.ResourcesFactory;
-import com.fast.dev.core.util.res.ResourcesUtil;
+import com.fast.dev.core.res.ResourcesFactory;
+import com.fast.dev.core.res.ResourcesUtil;
 
 /**
  * 资源包初始化，解压jar包中的资源到web项目里
@@ -18,15 +18,16 @@ import com.fast.dev.core.util.res.ResourcesUtil;
  */
 public class ResourcesInit {
 
-	private static Log log = LogFactory.getLog(ResourcesInit.class);
+	 static Log log = LogFactory.getLog(ResourcesInit.class);
 
 	/**
 	 * 初始化资源
 	 * 
 	 * @param realPath
 	 */
-	public static void init(final String realPath) {
-		log.info("初始化项目：" + realPath);
+	public static void init(final String realPath, String packageName) {
+		log.info("初始项目：" + realPath);
+		ResourcesFactory.init(packageName);
 		// 取出所有的jar包
 		List<File> jarFiles = getJars(realPath);
 		for (File jarFile : jarFiles) {

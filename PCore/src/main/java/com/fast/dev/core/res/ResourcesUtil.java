@@ -1,4 +1,4 @@
-package com.fast.dev.core.util.res;
+package com.fast.dev.core.res;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -59,6 +59,7 @@ public class ResourcesUtil {
 			throw new RuntimeException("资源解压失败，服务端终止运行!");
 		}
 	}
+	
 
 	
 	
@@ -89,7 +90,7 @@ public class ResourcesUtil {
 					}
 					String extZipName = zipName.substring(preZipName.length(), zipName.length());
 					// 目标文件是否存在
-					File targetFile = new File(folder.getAbsolutePath()+unpackJarModel.getTarget() + "/" + extZipName);
+					File targetFile = new File(folder.getAbsolutePath()+"/"+unpackJarModel.getTarget() + "/" + extZipName);
 					if (targetFile.exists()) {
 						if (unpackJarModel.getUnpackType() == UnpackType.Override) {
 							log.debug(jarFile.getName() + " -> " + zipName + " [override] ");

@@ -1,4 +1,4 @@
-package com.fast.dev.core.util.res;
+package com.fast.dev.core.res;
 
 /**
  * 资源的类型，小写，为了和文件夹名相同
