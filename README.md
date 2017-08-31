@@ -17,11 +17,12 @@
         https://tortoisegit.org/
         
         
-#### maven镜像 : 
+#### maven镜像：
     http://maven.aliyun.com/nexus/content/groups/public/
 
+
 #### 项目描述：
-    遵循Spring规范,由maven进行项目管理,将资源(html,css,js,jar 等)打包到jar包中，增量更新仅需替换jar包。
+    遵循Spring规范,由maven进行项目管理,将资源(html,css,js,jar 等)打包到jar包中，增量更新仅需替换jar包。
     核心项目：
         PServer(Web环境) + PCore (核心功能块) + PParent (依赖包、字符编码、JDK版本) 
     组件项目：
