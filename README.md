@@ -32,11 +32,11 @@
 #### 例子:
     Example-TemplateMark : 模版引擎
     
-    
 #### 技巧：
-    Maven项目莫名其妙报错，解决方法 ：4步 
-    1、 Alt+F5 Maven Clean ( Maven项目 Clean )
-    2、 Eclipse 菜单 -> Project -> Clean ( Eclipse 项目 clean )
-    3、 Server -> Tomcat -> Clean 
-    4、 Server -> Tomcat -> Clean Tomcat Work Directory...
+    Maven项目莫名其妙报错，解决方法 ：4步 
+    1、 Alt+F5 Maven Clean ( Maven项目 Clean )
+    2、 Eclipse 菜单 -> Project -> Clean ( Eclipse 项目 clean )
+    3、 Server -> Tomcat -> Clean 
+    4、 Server -> Tomcat -> Clean Tomcat Work Directory...
+
 
