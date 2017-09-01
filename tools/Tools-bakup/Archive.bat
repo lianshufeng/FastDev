@@ -8,4 +8,4 @@ rar a %fileName% -r -x*\.settings -x*\.classpath -x*\.gitignore -x*\.project -x*
 rar a %fileName% -r -x*\target .\PServer
 rar a %fileName% -r .\README.md
 echo 处理完成 , 5秒自动退出.
-ping 127.1 -n 5 >nul 
+ping 127.1 -n 5 >nul
