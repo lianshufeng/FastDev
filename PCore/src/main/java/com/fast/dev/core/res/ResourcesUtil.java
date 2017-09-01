@@ -14,7 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.StreamUtils;
 
-import com.fast.dev.core.util.code.MD5Util;
+import com.fast.dev.core.util.code.Crc32Util;
 
 /**
  * 解压资源工具
@@ -27,42 +27,22 @@ public class ResourcesUtil {
 	private static Log log = LogFactory.getLog(ResourcesUtil.class);
 
 	/**
-	 * 加压资源
 	 * 
-	 * @param source @param target @throws Exception @throws
+	 * @param source
+	 * 			@param target @throws Exception @throws
 	 */
-	public static void unpack(File jarFile, String resName, File target, UnpackType unpackType) {
+	public static void unpack(File jarFile, File folder, List<UnpackJarModel> unpackJarModels) {
 		if (!jarFile.exists()) {
 			return;
 		}
 		try {
-			unpackFile(jarFile, resName, target, unpackType);
+			unpackFile(jarFile, folder, unpackJarModels);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException("资源解压失败，服务端终止运行!");
 		}
 	}
-	
-	/**
-	 * 加压资源
-	 * 
-	 * @param source @param target @throws Exception @throws
-	 */
-	public static void unpack(File jarFile, File folder , List<UnpackJarModel> unpackJarModels) {
-		if (!jarFile.exists()) {
-			return;
-		}
-		try {
-			unpackFile(jarFile,folder, unpackJarModels);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException("资源解压失败，服务端终止运行!");
-		}
-	}
-	
 
-	
-	
 	/**
 	 * 解压文件
 	 * 
@@ -72,7 +52,7 @@ public class ResourcesUtil {
 	 * @param unpackType
 	 * @throws Exception
 	 */
-	private static void unpackFile(File jarFile , File folder , List<UnpackJarModel> unpackJarModels) throws Exception {
+	private static void unpackFile(File jarFile, File folder, List<UnpackJarModel> unpackJarModels) throws Exception {
 		FileInputStream inputStream = new FileInputStream(jarFile);
 		ZipInputStream zipInputStream = new ZipInputStream(inputStream);
 		ZipEntry zipEntry;
@@ -90,7 +70,8 @@ public class ResourcesUtil {
 					}
 					String extZipName = zipName.substring(preZipName.length(), zipName.length());
 					// 目标文件是否存在
-					File targetFile = new File(folder.getAbsolutePath()+"/"+unpackJarModel.getTarget() + "/" + extZipName);
+					File targetFile = new File(
+							folder.getAbsolutePath() + "/" + unpackJarModel.getTarget() + "/" + extZipName);
 					if (targetFile.exists()) {
 						if (unpackJarModel.getUnpackType() == UnpackType.Override) {
 							log.debug(jarFile.getName() + " -> " + zipName + " [override] ");
@@ -111,63 +92,13 @@ public class ResourcesUtil {
 		zipInputStream.close();
 		inputStream.close();
 	}
-	
-	/**
-	 * 解压文件
-	 * 
-	 * @param jarFile
-	 * @param resName
-	 * @param target
-	 * @param unpackType
-	 * @throws Exception
-	 */
-	private static void unpackFile(File jarFile, String resName, File target, UnpackType unpackType) throws Exception {
-		FileInputStream inputStream = new FileInputStream(jarFile);
-		ZipInputStream zipInputStream = new ZipInputStream(inputStream);
-		ZipEntry zipEntry;
-		while ((zipEntry = zipInputStream.getNextEntry()) != null) {
-			String zipName = zipEntry.getName();
-			// 判断目标文件不能为目录
-			if (zipName.indexOf(resName) == 0 && !zipEntry.isDirectory()) {
-				String preZipName;
-				int flag = zipName.indexOf("/");
-				if (flag == -1) {
-					preZipName = zipName;
-				} else {
-					preZipName = zipName.substring(0, flag);
-				}
-				String extZipName = zipName.substring(preZipName.length(), zipName.length());
-				// 目标文件是否存在
-				File targetFile = new File(target + "/" + extZipName);
-				if (targetFile.exists()) {
-					if (unpackType == UnpackType.Override) {
-						log.debug(jarFile.getName() + " -> " + zipName + " [override] ");
-						write(zipInputStream, targetFile);
-					} else {
-						log.debug(jarFile.getName() + " -> " + zipName + " [skip]");
-					}
-				} else {
-					log.debug(jarFile.getName() + " -> " + zipName + " [add]");
-					write(zipInputStream, targetFile);
-				}
-
-			}
-
-		}
-		zipInputStream.closeEntry();
-		zipInputStream.close();
-		inputStream.close();
-	}
 
 	private static void write(InputStream inputStream, File targetFile) throws IOException {
 		// 将数据拷贝到内存里
 		byte[] bin = StreamUtils.copyToByteArray(inputStream);
-//		 判断文件的重复性,必须存在的情况
+		// 判断文件的重复性,必须存在的情况
 		if (targetFile.exists()) {
-			byte[] targetFileBin = FileUtils.readFileToByteArray(targetFile);
-			String targetHash = new String(MD5Util.enCode(targetFileBin));
-			String sourceHash = new String(MD5Util.enCode(bin));
-			if (targetHash.equalsIgnoreCase(sourceHash)) {
+			if (Crc32Util.hash(FileUtils.readFileToByteArray(targetFile)) == Crc32Util.hash(bin)) {
 				return;
 			}
 		}
@@ -179,6 +110,5 @@ public class ResourcesUtil {
 		StreamUtils.copy(bin, fileOutputStream);
 		fileOutputStream.close();
 	}
-
 
 }
