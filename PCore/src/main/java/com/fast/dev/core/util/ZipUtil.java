@@ -40,21 +40,25 @@ public class ZipUtil {
 	 */
 	public static void zip(final OutputStream outputStream, final Map<String, File> m) {
 		ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream, Charset.forName(DefaultCharset));
-		for (Entry<String, File> e : m.entrySet()) {
+		for (Entry<String, File> entry : m.entrySet()) {
 			try {
-				if (e.getValue().exists()) {
+				if (entry.getValue().exists()) {
 					// 数据
-					ZipEntry zipEntry = new ZipEntry(e.getKey());
+					ZipEntry zipEntry = new ZipEntry(entry.getKey());
 					zipOutputStream.putNextEntry(zipEntry);
-
-					FileInputStream fileInputStream = new FileInputStream((e.getValue()));
-					StreamUtils.copy(fileInputStream, zipOutputStream);
-					fileInputStream.close();
-					zipOutputStream.closeEntry();
+					FileInputStream fileInputStream = new FileInputStream((entry.getValue()));
+					try {
+						StreamUtils.copy(fileInputStream, zipOutputStream);
+					} catch (Exception e) {
+						e.printStackTrace();
+					} finally {
+						fileInputStream.close();
+						zipOutputStream.closeEntry();
+					}
 				}
 
-			} catch (Exception e2) {
-				e2.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 		try {
