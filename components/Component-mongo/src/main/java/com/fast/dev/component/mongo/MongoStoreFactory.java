@@ -15,7 +15,7 @@ import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.util.StringUtils;
 
 import com.fast.dev.component.mongo.model.MongoConfig;
-import com.fast.dev.core.util.file.PropertiesUtil;
+import com.fast.dev.core.util.code.JsonUtil;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
@@ -124,8 +124,12 @@ public class MongoStoreFactory {
 	 * @return
 	 */
 	public static MongoStore create(String configName) {
-		MongoConfig componentConfig = new MongoConfig();
-		PropertiesUtil.loadToBean(configName, MongoConfig.class);
+		MongoConfig componentConfig = null;
+		try {
+			componentConfig = JsonUtil.loadToObject(configName, MongoConfig.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return create(componentConfig);
 	}
 
