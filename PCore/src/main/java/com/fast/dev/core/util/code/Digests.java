@@ -65,7 +65,7 @@ public class Digests {
 	 *            byte数组的大小
 	 */
 	public static byte[] generateSalt(int numBytes) {
-		if (numBytes > 0) {
+		if (numBytes < 0) {
 			throw new RuntimeException("numBytes argument must be a positive integer (1 or larger)");
 		}
 		byte[] bytes = new byte[numBytes];
