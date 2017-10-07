@@ -6,7 +6,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fast.dev.component.baidu.speech.bean.BaiduSpeechKey;
+import com.fast.dev.component.baidu.speech.bean.BaiduSpeech;
 import com.fast.dev.component.baidu.speech.bean.SpeechToken;
 import com.fast.dev.component.baidu.speech.service.SpeechService;
 import com.fast.dev.core.mark.TemplateMarkEngine;
@@ -23,16 +23,26 @@ import com.fast.dev.core.util.net.HttpClient;
  */
 public class SpeechServiceImpl implements SpeechService {
 	// 百度访问令牌
-	private BaiduSpeechKey baiduSpeechKey = null;
+	private BaiduSpeech baiduSpeech = null;
 	// 模版引擎
 	private TemplateMarkEngine templateMarkEngine = null;
 	// 语音令牌对象
 	private SpeechToken speechToken = null;
 
-	public void setBaiduSpeechKey(BaiduSpeechKey baiduSpeechKey) {
-		this.baiduSpeechKey = baiduSpeechKey;
+	/**
+	 * 设置百度的语音合成配置
+	 * 
+	 * @param baiduSpeech
+	 */
+	public void setBaiduSpeech(BaiduSpeech baiduSpeech) {
+		this.baiduSpeech = baiduSpeech;
 	}
 
+	/**
+	 * 设置模版引擎
+	 * 
+	 * @param templateMarkEngine
+	 */
 	public void setTemplateMarkEngine(TemplateMarkEngine templateMarkEngine) {
 		this.templateMarkEngine = templateMarkEngine;
 	}
@@ -69,8 +79,8 @@ public class SpeechServiceImpl implements SpeechService {
 		}
 		// 参数
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("client_id", this.baiduSpeechKey.getApiKey());
-		params.put("client_secret", this.baiduSpeechKey.getSecretKey());
+		params.put("client_id", this.baiduSpeech.getApiKey());
+		params.put("client_secret", this.baiduSpeech.getSecretKey());
 		String url = "https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&" + paramsToUri(params);
 		try {
 			this.speechToken = null;
@@ -105,10 +115,27 @@ public class SpeechServiceImpl implements SpeechService {
 		params.put("cuid", cuid);
 		params.put("tok", getSpeechToken());
 		params.put("tex", URLEncoder.encode(text, "UTF-8"));
-		params.put("vol", 9);
-		// 男声女声
-		// params.put("per", 1);
+
+		setExtParams(params, "spd", this.baiduSpeech.getSpd());
+		setExtParams(params, "pit", this.baiduSpeech.getPit());
+		setExtParams(params, "vol", this.baiduSpeech.getVol());
+		setExtParams(params, "per", this.baiduSpeech.getPer());
+		
+		
 		return "http://tsn.baidu.com/text2audio?" + paramsToUri(params);
+	}
+
+	/**
+	 * 设置扩展参数
+	 * 
+	 * @param params
+	 * @param name
+	 * @param value
+	 */
+	private static void setExtParams(final Map<String, Object> params, String name, Object value) {
+		if (value != null) {
+			params.put(name, value);
+		}
 	}
 
 	/**
