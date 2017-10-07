@@ -5,7 +5,7 @@ import javax.annotation.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.fast.dev.component.baidu.speech.bean.BaiduSpeechKey;
+import com.fast.dev.component.baidu.speech.bean.BaiduSpeech;
 import com.fast.dev.component.baidu.speech.service.SpeechService;
 import com.fast.dev.component.baidu.speech.service.impl.SpeechServiceImpl;
 import com.fast.dev.core.mark.TemplateMarkEngine;
@@ -21,8 +21,8 @@ public class SpeechConfig {
 	public SpeechService speechService() throws Exception {
 		SpeechServiceImpl speechService = new SpeechServiceImpl();
 		// 配置key
-		BaiduSpeechKey baiduSpeechKey = JsonUtil.loadToObject("BaiduSpeechKey.json", BaiduSpeechKey.class);
-		speechService.setBaiduSpeechKey(baiduSpeechKey);
+		BaiduSpeech baiduSpeech = JsonUtil.loadToObject("BaiduSpeech.json", BaiduSpeech.class);
+		speechService.setBaiduSpeech(baiduSpeech);
 
 		// 配置模版引擎
 		speechService.setTemplateMarkEngine(this.templateMarkEngine);

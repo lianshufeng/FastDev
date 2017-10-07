@@ -55,6 +55,13 @@ public class TestController {
 		sendRedirect(response, location);
 	}
 
+	/**
+	 * 重定向
+	 * 
+	 * @param response
+	 * @param location
+	 * @throws IOException
+	 */
 	private void sendRedirect(HttpServletResponse response, String location) throws IOException {
 		response.sendRedirect(location);
 	}
