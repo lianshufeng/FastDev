@@ -6,7 +6,6 @@ import java.lang.reflect.InvocationTargetException;
 import javax.sql.DataSource;
 
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
@@ -28,9 +27,6 @@ import com.fast.dev.hibernate.bean.HibernateConfig;
 @EnableTransactionManagement
 public class HibernateConfiguration {
 
-	@Autowired
-	private HibernateConfig dataSourceConfig;
-
 	/**
 	 * 配置事务
 	 * 
@@ -38,9 +34,9 @@ public class HibernateConfiguration {
 	 * @throws IOException
 	 */
 	@Bean
-	public PlatformTransactionManager transactionManager() throws Exception {
+	public PlatformTransactionManager transactionManager(HibernateConfig hibernateConfig) throws Exception {
 		HibernateTransactionManager transactionManager = new HibernateTransactionManager();
-		transactionManager.setSessionFactory(sessionFactory());
+		transactionManager.setSessionFactory(sessionFactory(hibernateConfig));
 		return transactionManager;
 	}
 
@@ -51,14 +47,14 @@ public class HibernateConfiguration {
 	 * @throws IOException
 	 */
 	@Bean
-	public SessionFactory sessionFactory() throws Exception {
+	public SessionFactory sessionFactory(HibernateConfig hibernateConfig) throws Exception {
 		LocalSessionFactoryBean localSessionFactoryBean = new LocalSessionFactoryBean();
 		// 设置数据源
-		localSessionFactoryBean.setDataSource(dataSource());
+		localSessionFactoryBean.setDataSource(dataSource(hibernateConfig));
 		// 设置hibernate配置项
-		localSessionFactoryBean.setHibernateProperties(this.dataSourceConfig.getHibernate());
+		localSessionFactoryBean.setHibernateProperties(hibernateConfig.getHibernate());
 		// 设置扫描的包名
-		localSessionFactoryBean.setPackagesToScan(this.dataSourceConfig.getPackagesToScan());
+		localSessionFactoryBean.setPackagesToScan(hibernateConfig.getPackagesToScan());
 		// 初始化完成
 		localSessionFactoryBean.afterPropertiesSet();
 		return localSessionFactoryBean.getObject();
@@ -72,8 +68,8 @@ public class HibernateConfiguration {
 	 * @throws IllegalAccessException
 	 */
 	@Bean
-	public DataSource dataSource() throws Exception {
-		return this.dataSourceConfig.getDataSource();
+	public DataSource dataSource(HibernateConfig hibernateConfig) throws Exception {
+		return hibernateConfig.getDataSource();
 	}
 
 }
