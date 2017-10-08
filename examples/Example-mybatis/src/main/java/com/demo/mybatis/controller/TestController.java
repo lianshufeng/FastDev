@@ -10,6 +10,14 @@ import com.fast.dev.core.model.InvokerResult;
 @Controller
 public class TestController {
 
+	/**
+	 * 创建表
+	 * 
+	 * CREATE TABLE `User` ( `id` varchar(255) NOT NULL, `name` varchar(255) DEFAULT
+	 * NULL, PRIMARY KEY (`id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+	 * 
+	 */
+
 	@Autowired
 	private UserService userService;
 
@@ -35,6 +43,7 @@ public class TestController {
 
 	/**
 	 * http://127.0.0.1:8080/PServer/get.json?name=test
+	 * 
 	 * @param id
 	 * @return
 	 */
