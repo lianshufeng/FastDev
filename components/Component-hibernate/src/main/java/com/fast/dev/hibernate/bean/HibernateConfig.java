@@ -5,7 +5,7 @@ import java.util.Properties;
 import com.jolbox.bonecp.BoneCPDataSource;
 
 /**
- * 数据源的配置，并注入到spring的容器里
+ * 数据源的配置
  * 
  * @作者 练书锋
  * @联系 251708339@qq.com
