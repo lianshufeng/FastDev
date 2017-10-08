@@ -1,0 +1,15 @@
+{
+	"packagesToScan": [
+		"com.demo.hibernate.domain"
+	],
+	"hibernate": {
+		"hibernate.show_sql": true,
+		"hibernate.hbm2ddl.auto": "update"
+	},
+	"dataSource": {
+		"driverClass": "com.mysql.cj.jdbc.Driver",
+		"jdbcUrl": "jdbc:mysql://192.168.10.128:3306/test?useUnicode=true&characterEncoding=utf8&autoReconnect=true&rewriteBatchedStatements=TRUE&serverTimezone=UTC",
+		"username": "root",
+		"password": "root"
+	}
+}
