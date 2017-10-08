@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>Component-hibernate</artifactId>
+  <parent>
+  	<groupId>com.fast.dev</groupId>
+  	<artifactId>PParent</artifactId>
+  	<version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <dependencies>
+  	<dependency>
+  		<groupId>com.fast.dev</groupId>
+  		<artifactId>PCore</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.hibernate</groupId>
+  		<artifactId>hibernate-core</artifactId>
+  		<version>5.2.10.Final</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.jolbox</groupId>
+  		<artifactId>bonecp</artifactId>
+  		<version>0.8.0.RELEASE</version>
+  		<type>bundle</type>
+  	</dependency>
+  	<dependency>
+  		<groupId>commons-beanutils</groupId>
+  		<artifactId>commons-beanutils-core</artifactId>
+  		<version>1.8.3</version>
+  	</dependency>
+  </dependencies>
+</project>
