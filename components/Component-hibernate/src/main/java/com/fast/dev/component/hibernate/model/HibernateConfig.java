@@ -1,5 +1,6 @@
-package com.fast.dev.hibernate.bean;
+package com.fast.dev.component.hibernate.model;
 
+import java.io.Serializable;
 import java.util.Properties;
 
 import com.jolbox.bonecp.BoneCPDataSource;
@@ -12,7 +13,12 @@ import com.jolbox.bonecp.BoneCPDataSource;
  * @时间 2017年10月8日
  *
  */
-public class HibernateConfig {
+public class HibernateConfig implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	// hibernate的配置项目
 	private Properties hibernate;

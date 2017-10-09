@@ -1,4 +1,4 @@
-package com.fast.dev.mybatis.conf;
+package com.fast.dev.component.mybatis.conf;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -15,7 +15,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.fast.dev.mybatis.bean.MyBatisConfig;
+import com.fast.dev.component.mybatis.model.MyBatisConfig;
 
 /**
  * MyBatis配置，托管给spring事务
@@ -55,14 +55,14 @@ public class MyBatisConfiguration {
 		SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		// 数据源
 		sqlSessionFactoryBean.setDataSource(dataSource(myBatisConfig));
-		
+
 		// xml资源
 		String mapperLocations = myBatisConfig.getMapperLocations();
 		if (mapperLocations != null) {
 			PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 			sqlSessionFactoryBean.setMapperLocations(resolver.getResources(mapperLocations));
 		}
-		//获取SqlSessionFactory
+		// 获取SqlSessionFactory
 		SqlSessionFactory sessionFactory = sqlSessionFactoryBean.getObject();
 		return sessionFactory;
 	}

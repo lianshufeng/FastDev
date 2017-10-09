@@ -1,4 +1,4 @@
-package com.fast.dev.hibernate.conf;
+package com.fast.dev.component.hibernate.conf;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -13,7 +13,7 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.fast.dev.hibernate.bean.HibernateConfig;
+import com.fast.dev.component.hibernate.model.HibernateConfig;
 
 /**
  * hibernate配置，托管给spring事务

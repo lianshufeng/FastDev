@@ -1,4 +1,6 @@
-package com.fast.dev.mybatis.bean;
+package com.fast.dev.component.mybatis.model;
+
+import java.io.Serializable;
 
 import com.jolbox.bonecp.BoneCPDataSource;
 
@@ -10,7 +12,12 @@ import com.jolbox.bonecp.BoneCPDataSource;
  * @时间 2017年10月8日
  *
  */
-public class MyBatisConfig {
+public class MyBatisConfig implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	// 数据源配置
 	private BoneCPDataSource dataSource;
