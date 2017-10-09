@@ -1,26 +1,32 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>Example-mybatis</artifactId>
-  <parent>
-  	<groupId>com.fast.dev</groupId>
-  	<artifactId>PParent</artifactId>
-  	<version>0.0.1-SNAPSHOT</version>
-  </parent>
-  <dependencies>
-  	<dependency>
-  		<groupId>com.fast.dev</groupId>
-  		<artifactId>PCore</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>mysql</groupId>
-  		<artifactId>mysql-connector-java</artifactId>
-  		<version>6.0.6</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.fast.dev</groupId>
-  		<artifactId>Component-mybatis</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
-  	</dependency>
-  </dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>Example-mybatis</artifactId>
+	<parent>
+		<groupId>com.fast.dev</groupId>
+		<artifactId>PParent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<dependencies>
+		<dependency>
+			<groupId>com.fast.dev</groupId>
+			<artifactId>PCore</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fast.dev</groupId>
+			<artifactId>Component-mybatis</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fast.dev</groupId>
+			<artifactId>Example-db-base</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>6.0.6</version>
+		</dependency>
+	</dependencies>
 </project>

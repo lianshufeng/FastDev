@@ -4,11 +4,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import com.fast.dev.component.mybatis.model.MyBatisConfig;
 import com.fast.dev.core.util.code.JsonUtil;
-import com.fast.dev.mybatis.bean.MyBatisConfig;
 
 @Configuration
-@ComponentScan(basePackages = { "com.demo.mybatis" })
+@ComponentScan(basePackages = { "com.demo.db.base","com.demo.mybatis" })
 public class DataSourceConfig {
 
 	@Bean
