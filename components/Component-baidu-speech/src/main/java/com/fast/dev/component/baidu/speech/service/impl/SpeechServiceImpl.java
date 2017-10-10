@@ -6,8 +6,8 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fast.dev.component.baidu.speech.bean.BaiduSpeech;
-import com.fast.dev.component.baidu.speech.bean.SpeechToken;
+import com.fast.dev.component.baidu.speech.model.BaiduSpeechConfig;
+import com.fast.dev.component.baidu.speech.model.SpeechToken;
 import com.fast.dev.component.baidu.speech.service.SpeechService;
 import com.fast.dev.core.mark.TemplateMarkEngine;
 import com.fast.dev.core.util.code.JsonUtil;
@@ -23,7 +23,7 @@ import com.fast.dev.core.util.net.HttpClient;
  */
 public class SpeechServiceImpl implements SpeechService {
 	// 百度访问令牌
-	private BaiduSpeech baiduSpeech = null;
+	private BaiduSpeechConfig baiduSpeech = null;
 	// 模版引擎
 	private TemplateMarkEngine templateMarkEngine = null;
 	// 语音令牌对象
@@ -34,7 +34,7 @@ public class SpeechServiceImpl implements SpeechService {
 	 * 
 	 * @param baiduSpeech
 	 */
-	public void setBaiduSpeech(BaiduSpeech baiduSpeech) {
+	public void setBaiduSpeech(BaiduSpeechConfig baiduSpeech) {
 		this.baiduSpeech = baiduSpeech;
 	}
 
