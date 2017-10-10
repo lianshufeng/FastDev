@@ -1,5 +1,7 @@
 package com.fast.dev.component.baidu.speech.model;
 
+import java.io.Serializable;
+
 /**
  * 百度配置
  * 
@@ -8,8 +10,13 @@ package com.fast.dev.component.baidu.speech.model;
  * @时间 2017年10月7日
  *
  */
-public class BaiduSpeechConfig {
+public class BaiduSpeechConfig implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private String apiKey;
 	private String secretKey;
 
