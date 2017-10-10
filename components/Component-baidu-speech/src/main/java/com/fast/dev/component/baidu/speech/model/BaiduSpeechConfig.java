@@ -1,4 +1,4 @@
-package com.fast.dev.component.baidu.speech.bean;
+package com.fast.dev.component.baidu.speech.model;
 
 /**
  * 百度配置
@@ -8,7 +8,7 @@ package com.fast.dev.component.baidu.speech.bean;
  * @时间 2017年10月7日
  *
  */
-public class BaiduSpeech {
+public class BaiduSpeechConfig {
 
 	private String apiKey;
 	private String secretKey;

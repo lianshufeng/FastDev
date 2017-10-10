@@ -1,4 +1,4 @@
-package com.fast.dev.component.baidu.speech.bean;
+package com.fast.dev.component.baidu.speech.model;
 
 /**
  * 令牌容器
