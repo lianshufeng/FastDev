@@ -24,7 +24,7 @@ public interface UserDaoImpl extends UserDao {
 	@SelectKey(statement = "select replace(UUID(),'-','') as id", keyProperty = "user.id", before = true, statementType = StatementType.STATEMENT, resultType = String.class)
 	public void save(@Param("user") User user);
 
-	@Delete("delete from T_User")
+	@Delete("delete from T_User where name = #{name} ")
 	public int remove(String name);
 
 }
