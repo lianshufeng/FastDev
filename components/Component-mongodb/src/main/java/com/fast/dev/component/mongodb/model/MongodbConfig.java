@@ -1,4 +1,4 @@
-package com.fast.dev.component.hibernate.model;
+package com.fast.dev.component.mongodb.model;
 
 import java.io.Serializable;
 

@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import com.fast.dev.component.hibernate.model.MongodbConfig;
+import com.fast.dev.component.mongodb.model.MongodbConfig;
 import com.fast.dev.core.util.code.JsonUtil;
 
 @Configuration

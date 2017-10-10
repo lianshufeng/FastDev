@@ -1,4 +1,4 @@
-package com.fast.dev.component.hibernate.conf;
+package com.fast.dev.component.mongodb.conf;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +16,7 @@ import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.util.StringUtils;
 
-import com.fast.dev.component.hibernate.model.MongodbConfig;
+import com.fast.dev.component.mongodb.model.MongodbConfig;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoCredential;
