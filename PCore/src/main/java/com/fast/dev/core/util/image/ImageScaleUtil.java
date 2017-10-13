@@ -29,6 +29,27 @@ public class ImageScaleUtil {
 			// 缩放率
 			int width = (int) (sourceImage.getWidth() * rate);
 			int height = (int) (sourceImage.getHeight() * rate);
+			scale(sourceImageFile, outputImageFile, width, height);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	/**
+	 * 缩放图片
+	 * 
+	 * @param sourceImageFile
+	 * @param outputImageFile
+	 * @param width
+	 * @param height
+	 * @return
+	 */
+	public static boolean scale(File sourceImageFile, File outputImageFile, int width, int height) {
+		try {
+			BufferedImage sourceImage = ImageIO.read(sourceImageFile);
+			// 缩放率
 			// 创建原图缩放比例的图片
 			Image image = sourceImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
 			BufferedImage targetImage = new BufferedImage(width, height, Image.SCALE_SMOOTH);
