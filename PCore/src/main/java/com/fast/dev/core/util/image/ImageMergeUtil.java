@@ -133,8 +133,10 @@ public class ImageMergeUtil {
 
 		for (int w = 0; w < width; w++) {
 			for (int h = 0; h < height; h++) {
-				int rgb = newBufferedImage.getRGB(x + w, y + h);
-				targetImage.setRGB(w, h, rgb);
+				if (x + w < newBufferedImage.getWidth() && y + h < newBufferedImage.getHeight()) {
+					int rgb = newBufferedImage.getRGB(x + w, y + h);
+					targetImage.setRGB(w, h, rgb);
+				}
 			}
 		}
 		return targetImage;
@@ -258,14 +260,19 @@ public class ImageMergeUtil {
 	// // int width = 1920;
 	// // int height = 1080;
 	// double scale = 1 - 0.618;
-	// mergeToCenter(new File("c:/logo.png"), scale, rgb, new File("c:/1.png"),
-	// width, height);
-	// mergeToCenter(new File("c:/logo.png"), scale, new File("c:/backgroup.jpg"),
-	// new File("c:/2.png"), 720, 1080);
+	// // mergeToCenter(new File("c:/logo.png"), scale, rgb, new File("c:/1.png"),
+	// // width, height);
+	// // mergeToCenter(new File("c:/logo.png"), scale, new
+	// File("c:/backgroup.jpg"),
+	// // new File("c:/2.png"), 720, 1080);
 	//
-	// mergeToCenter(new File("c:/logo.png"), scale, new File("c:/backgroup.jpg"),
-	// new File("c:/3.png"), 1920, 1080);
+	// // mergeToCenter(new File("c:/logo.png"), scale, new
+	// File("c:/backgroup.jpg"),
+	// // new File("c:/3.png"), 1920, 1080);
 	//
+	// mergeToCenter(new File("c:/logo.png"), scale, new
+	// File("c:/launch_backgroup.jpg"), new File("c:/test.png"),
+	// 1280, 1920);
 	// System.out.println(" time : " + (System.currentTimeMillis() - l));
 	// }
 
