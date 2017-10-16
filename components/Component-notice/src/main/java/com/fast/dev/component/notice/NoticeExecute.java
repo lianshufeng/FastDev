@@ -31,6 +31,6 @@ public interface NoticeExecute<T> {
 	 * 
 	 * @return
 	 */
-	public int sort();
+	public int order();
 
 }
