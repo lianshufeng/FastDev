@@ -47,6 +47,4 @@ public interface AliPayService {
 	//out_request_no:请求退款接口时，传入的退款请求号，如果在退款请求时未传入，则该值为创建交易时的外部交易号
 	public AlipayTradeFastpayRefundQueryResponse refundQuery(String out_trade_no,String trade_no,String out_request_no);
 	
-	
-	//支付后返回URL接口
 }
