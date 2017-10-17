@@ -125,7 +125,7 @@ public class SpeechServiceImpl implements SpeechService {
 		return "http://tsn.baidu.com/text2audio?" + paramsToUri(params);
 	}
 
-	/**
+	/**copy
 	 * 设置扩展参数
 	 * 
 	 * @param params
