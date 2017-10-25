@@ -1,4 +1,4 @@
-package com.fast.dev.component.mongo.dao.impl;
+package com.fast.dev.component.mongodb.dao.impl;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
-import com.fast.dev.component.mongo.util.EntityObjectUtil;
+import com.fast.dev.component.mongodb.util.EntityObjectUtil;
 import com.fast.dev.core.dao.GeneralDao;
 import com.fast.dev.core.dao.model.Orders;
 import com.mongodb.WriteResult;

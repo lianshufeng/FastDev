@@ -1,4 +1,4 @@
-package com.fast.dev.component.mongo.util;
+package com.fast.dev.component.mongodb.util;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,7 +7,7 @@ import java.util.List;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Update;
 
-import com.fast.dev.component.mongo.dao.domain.SuperEntity;
+import com.fast.dev.component.mongodb.dao.domain.SuperEntity;
 
 /**
  * 实体工具类

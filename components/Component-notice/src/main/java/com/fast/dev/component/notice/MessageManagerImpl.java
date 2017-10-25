@@ -54,7 +54,7 @@ public class MessageManagerImpl implements MessageManager {
 			Collections.sort(noticeInterfaces, new Comparator<NoticeExecute<?>>() {
 				@Override
 				public int compare(NoticeExecute<?> noticeInterface1, NoticeExecute<?> noticeInterface2) {
-					return noticeInterface1.sort() - noticeInterface2.sort();
+					return noticeInterface1.order() - noticeInterface2.order();
 				}
 			});
 		}
