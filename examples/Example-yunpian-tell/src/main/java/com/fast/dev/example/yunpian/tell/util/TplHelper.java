@@ -6,7 +6,6 @@ import java.util.Map;
 
 public class TplHelper {
 	
-	
   public static String ConvertTpl(Map<String, String>map) throws UnsupportedEncodingException{
 	  
 	  String tpl_value="";

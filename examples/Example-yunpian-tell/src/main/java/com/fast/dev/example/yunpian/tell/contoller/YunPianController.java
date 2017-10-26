@@ -16,7 +16,7 @@ import com.fast.dev.core.model.InvokerResult;
 import com.fast.dev.example.yunpian.tell.util.TplHelper;
 
 @Controller
-@RequestMapping(value = "YunPian")
+@RequestMapping(value = "YunPianTell")
 public class YunPianController {
 	
 	@Autowired
@@ -33,10 +33,9 @@ public class YunPianController {
 	 */
 	
 			@RequestMapping("tplSendTell.json")
-			public void tplSendTell(HttpServletResponse httpResponse,HttpServletResponse resp,String tpl_id,String tpl_value,String mobile) throws IOException{
+			public InvokerResult<String> tplSendTell(HttpServletResponse httpResponse,HttpServletResponse resp,String tpl_id,String tpl_value,String mobile) throws IOException{
 
-				mobile = "18523098272";
-				
+				mobile = "15826110609";
 				//构造需要的填充信息
 				
 				Map<String, String> map = new HashMap();
@@ -49,8 +48,7 @@ public class YunPianController {
 				
 				tpl_value = TplHelper.ConvertTpl(map);
 				
-				yunPianTellService.tplSendTell(1992732, tpl_value, mobile);
-				
+				return new InvokerResult<String>(yunPianTellService.tplSendTell(1992732, tpl_value, mobile)) ;
 			}
 			
 			
