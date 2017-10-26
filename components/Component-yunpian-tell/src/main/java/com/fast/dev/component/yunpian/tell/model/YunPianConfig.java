@@ -10,7 +10,7 @@ public class YunPianConfig implements Serializable{
 	//云片APIKEY
 	private String apikey;
 	//回调URL
-	private String callback_url;
+	private String callback_url; 
     //编码格式。发送编码格式统一用UTF-8
     private  String encoding = "UTF-8";
 	public String getApikey() {

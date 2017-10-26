@@ -27,13 +27,8 @@ public class YunPianTellServiceImpl implements YunPianTellService{
         params.put("tpl_value", tpl_value);
         
         String result =  HttpHelper.post("https://voice.yunpian.com/v2/voice/tpl_notify.json", params);
-  
-       
         
-        //urlencode("name=深度学习&time=14:00","utf-8")
-        
-        System.out.println(result);
-		return null;
+		return result;
 	}
 
 }
