@@ -93,7 +93,7 @@ public class MongodbConfiguration {
 	 * @param passWord
 	 * @param mongoClientOptions
 	 * @return
-	 */
+	 */ 
 	private static MongoClient buildMongoClient(List<ServerAddress> serverAddressList, String dbName, String userName,
 			String passWord, MongoClientOptions mongoClientOptions) {
 
