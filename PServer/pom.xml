@@ -28,15 +28,5 @@
 			<artifactId>PCore</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>com.fast.dev</groupId>
-			<artifactId>Example-ali-pay</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fast.dev</groupId>
-			<artifactId>Tools-auto-deployment</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
 	</dependencies>
 </project>
