@@ -1,0 +1,10 @@
+{
+	"needSecurityMethodUrl": [
+		"/user/**",
+		"/manager/**"
+	],
+	"excludeSecurityMethodUrl": [
+		"/user/logout",
+		"/user/info"
+	]
+}
