@@ -16,6 +16,6 @@ public interface UserSecurityHelper {
 	 * 
 	 * @return
 	 */
-	public <T> UserToken<T> get(Class<T> cls);
+	public <T> UserToken<T> get();
 
 }

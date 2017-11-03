@@ -22,7 +22,7 @@ public class UserSecurityConfig implements Serializable {
 
 	// 用户缓存
 	private UserCacheConfig userCache = new UserCacheConfig(60, 60, 1000, false);
-	
+
 	// 需要拦截方法的URL
 	private String[] needSecurityMethodUrl = null;
 
@@ -30,7 +30,7 @@ public class UserSecurityConfig implements Serializable {
 	private String[] excludeSecurityMethodUrl = null;
 
 	// 执行拦截URL的优先级
-	private int SecurityMethodUrlLevel = 0;
+	private int securityMethodUrlLevel = 0;
 
 	/**
 	 * @return the rolePrefixName
@@ -46,7 +46,6 @@ public class UserSecurityConfig implements Serializable {
 	public void setRolePrefixName(String rolePrefixName) {
 		this.rolePrefixName = rolePrefixName;
 	}
-
 
 	/**
 	 * @return the needSecurityMethodUrl
@@ -82,7 +81,7 @@ public class UserSecurityConfig implements Serializable {
 	 * @return the securityMethodUrlLevel
 	 */
 	public int getSecurityMethodUrlLevel() {
-		return SecurityMethodUrlLevel;
+		return securityMethodUrlLevel;
 	}
 
 	/**
@@ -90,7 +89,7 @@ public class UserSecurityConfig implements Serializable {
 	 *            the securityMethodUrlLevel to set
 	 */
 	public void setSecurityMethodUrlLevel(int securityMethodUrlLevel) {
-		SecurityMethodUrlLevel = securityMethodUrlLevel;
+		this.securityMethodUrlLevel = securityMethodUrlLevel;
 	}
 
 	/**
@@ -101,13 +100,11 @@ public class UserSecurityConfig implements Serializable {
 	}
 
 	/**
-	 * @param userCache the userCache to set
+	 * @param userCache
+	 *            the userCache to set
 	 */
 	public void setUserCache(UserCacheConfig userCache) {
 		this.userCache = userCache;
 	}
-	
-	
-	
 
 }

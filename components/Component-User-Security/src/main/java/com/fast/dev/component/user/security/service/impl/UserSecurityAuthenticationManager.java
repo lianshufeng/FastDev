@@ -43,7 +43,7 @@ public class UserSecurityAuthenticationManager implements UserSecurityHelper {
 	private CacheManager cacheManager = CacheManager.create();
 	// 用户缓存
 	private Cache userCache = null;
-	
+
 	@Resource
 	private UserSecurityConfig userSecurityConfig;
 
@@ -56,7 +56,7 @@ public class UserSecurityAuthenticationManager implements UserSecurityHelper {
 	 * @param request
 	 */
 
-	public void preHandle(HttpServletRequest request) {
+	public void authentication(HttpServletRequest request) {
 		// 初始化权限
 		setAuthentication(null);
 		// 取出sessionId
@@ -64,11 +64,11 @@ public class UserSecurityAuthenticationManager implements UserSecurityHelper {
 		if (StringUtils.isEmpty(sessionId)) {
 			return;
 		}
+		// 取用户信息与角色
 		UserRole<?> userRole = role(sessionId);
 		if (StringUtils.isEmpty(userRole)) {
 			return;
 		}
-
 		// 远程信息
 		String remoteHost = request.getRemoteHost();
 		UserToken<?> userToken = createUserToken(sessionId, remoteHost, userRole);
@@ -76,18 +76,8 @@ public class UserSecurityAuthenticationManager implements UserSecurityHelper {
 		setAuthentication(userToken);
 	}
 
-	/**
-	 * 由拦截器触发，在访问权限方法之后
-	 * 
-	 * @param request
-	 */
-	public void afterCompletion(HttpServletRequest request) {
-		// 清空权限
-		setAuthentication(null);
-	}
-
 	@Override
-	public <T> UserToken<T> get(Class<T> cls) {
+	public <T> UserToken<T> get() {
 		return (UserToken<T>) SecurityContextHolder.getContext().getAuthentication();
 	}
 

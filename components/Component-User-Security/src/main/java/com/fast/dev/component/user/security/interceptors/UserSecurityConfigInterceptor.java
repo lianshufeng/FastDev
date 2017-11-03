@@ -36,7 +36,7 @@ public class UserSecurityConfigInterceptor implements UrlInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		userSecurityAuthenticationManager.preHandle(request);
+		userSecurityAuthenticationManager.authentication(request);
 		return true;
 	}
 
@@ -48,7 +48,6 @@ public class UserSecurityConfigInterceptor implements UrlInterceptor {
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
-		userSecurityAuthenticationManager.afterCompletion(request);
 	}
 
 	@Override
@@ -63,7 +62,7 @@ public class UserSecurityConfigInterceptor implements UrlInterceptor {
 
 	@Override
 	public int level() {
-		return 0;
+		return userSecurityConfig.getSecurityMethodUrlLevel();
 	}
 
 }
