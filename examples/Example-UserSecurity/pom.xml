@@ -9,7 +9,7 @@
   	</dependency>
   	<dependency>
   		<groupId>com.fast.dev</groupId>
-  		<artifactId>UserSecurity</artifactId>
+  		<artifactId>Component-User-Security</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
   </dependencies>
