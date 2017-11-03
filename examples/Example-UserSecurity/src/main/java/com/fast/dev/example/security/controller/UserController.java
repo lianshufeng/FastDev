@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.fast.dev.component.user.security.service.UserSecurityHelper;
+import com.fast.dev.component.user.security.token.UserToken;
 import com.fast.dev.core.model.InvokerResult;
 import com.fast.dev.core.util.code.JsonUtil;
 import com.fast.dev.example.security.model.UserInfo;
@@ -36,7 +37,8 @@ public class UserController {
 	@Secured({ "ROLE_user" })
 	@RequestMapping("info.json")
 	public Object info() throws Exception {
-		UserInfo info = userSecurityHelper.get(UserInfo.class).getUser();
+		UserToken<UserInfo> userToken =  userSecurityHelper.get();
+		UserInfo info = userToken.getUser();
 		System.out.println(JsonUtil.toJson(info) +" hash : "+info.hashCode());
 		return new InvokerResult<Object>(System.currentTimeMillis());
 	}
