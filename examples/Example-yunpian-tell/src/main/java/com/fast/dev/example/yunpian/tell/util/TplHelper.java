@@ -45,11 +45,16 @@ public class TplHelper {
 	 
 	 return returnChar;
  }
-  
+ 
+ 
+ /**
+  * 将数字转换为汉字念出来
+  * @param num
+  * @return
+  */
  public static String getCharByNum(int num){
 	 
 	  char[] numArray = { '零', '一', '二', '三', '四', '五', '六', '七', '八', '九' };
-	 
 	 
 	 return String.valueOf(numArray[num]);
  }
