@@ -1,0 +1,10 @@
+{
+	"url": {
+		"addPathPatterns": [
+			"/**/*.json"
+		],
+		"level": 1
+	}
+}
+
+
