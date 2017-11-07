@@ -18,6 +18,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ResponseUtil {
 
+	private final static String CallBackName = "callback";
+
 	private final static JsonEncoding encoding = JsonEncoding.UTF8;
 
 	private final static ObjectMapper objectMapper = new ObjectMapper();
@@ -35,8 +37,9 @@ public class ResponseUtil {
 			long contentLenth) throws Exception {
 		response.setContentType(contentType);
 		response.addHeader("Access-Control-Allow-Origin", "*");
-		if(null!=fileName){
-			response.addHeader("Content-Disposition","attachment;fileName*=UTF-8''" + URLEncoder.encode(fileName, "UTF-8"));
+		if (null != fileName) {
+			response.addHeader("Content-Disposition",
+					"attachment;fileName*=UTF-8''" + URLEncoder.encode(fileName, "UTF-8"));
 		}
 		response.addHeader("Content-Length", String.valueOf(contentLenth));
 	}
@@ -75,10 +78,28 @@ public class ResponseUtil {
 	 */
 	public static void write(final HttpServletRequest request, final HttpServletResponse response, final Object content)
 			throws Exception {
+		// 取出jsonp的方法名
+		String jsonpFunction = request.getParameter(CallBackName);
 		// 写出响应头
-		writeHeader(request, response);
+		writeHeader(jsonpFunction, response);
 		// 写出内容
-		writeContent(request, response, content);
+		writeContent(jsonpFunction, response, content);
+	}
+
+	/**
+	 * 写出json对象,支持JSONP
+	 * 
+	 * @param jsonpFunction
+	 * @param response
+	 * @param content
+	 * @throws Exception
+	 */
+	public static void write(final String jsonpFunction, final HttpServletResponse response, final Object content)
+			throws Exception {
+		// 写出响应头
+		writeHeader(jsonpFunction, response);
+		// 写出内容
+		writeContent(jsonpFunction, response, content);
 	}
 
 	/**
@@ -108,8 +129,9 @@ public class ResponseUtil {
 	 * @param request
 	 * @param response
 	 */
-	private static void writeHeader(HttpServletRequest request, HttpServletResponse response) {
-		response.setHeader("Content-Type", "application/json;charset=" + encoding.getJavaName());
+	private static void writeHeader(final String jsonpFunction, final HttpServletResponse response) {
+		String contentType = jsonpFunction == null ? "application/json" : "text/javascript";
+		response.setHeader("Content-Type", contentType + ";charset=" + encoding.getJavaName());
 		response.setCharacterEncoding(encoding.getJavaName());
 		response.addHeader("Pragma", "no-cache");
 		response.addHeader("Cache-Control", "no-cache, no-store, max-age=0");
@@ -123,9 +145,8 @@ public class ResponseUtil {
 	 * @param object
 	 * @throws IOException
 	 */
-	private static void writeContent(final HttpServletRequest request, final HttpServletResponse response,
+	private static void writeContent(final String jsonpFunction, final HttpServletResponse response,
 			final Object object) throws IOException {
-		String jsonpFunction = request.getParameter("callback");
 		JsonGenerator generator = objectMapper.getFactory().createGenerator(response.getOutputStream(), encoding);
 		writePrefix(generator, jsonpFunction);
 		objectMapper.writeValue(generator, object);
