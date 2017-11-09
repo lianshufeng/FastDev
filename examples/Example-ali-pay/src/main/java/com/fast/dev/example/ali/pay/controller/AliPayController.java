@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.alipay.api.request.AlipayFundTransToaccountTransferRequest;
+import com.alipay.api.response.AlipayFundTransToaccountTransferResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.fast.dev.component.ali.pay.model.AliPayOrder;
 import com.fast.dev.component.ali.pay.service.AliPayService;
@@ -61,11 +62,11 @@ public class AliPayController {
 			 * 转账
 			 */
 			@RequestMapping("transfer.json")
-			public InvokerResult<AlipayFundTransToaccountTransferRequest> transfer(String out_biz_no,String payee_account,String payer_show_name,String payee_real_name,String amount,String remark){
+			public InvokerResult<AlipayFundTransToaccountTransferResponse> transfer(String out_biz_no,String payee_account,String payer_show_name,String payee_real_name,String amount,String remark){
 				
-				AlipayFundTransToaccountTransferRequest request =aliPayService.transfer(out_biz_no, payee_account, payer_show_name, payee_real_name, amount, remark);
+				AlipayFundTransToaccountTransferResponse response =aliPayService.transfer(out_biz_no, payee_account, payer_show_name, payee_real_name, amount, remark);
 				
-				return null;
+				return new InvokerResult<>(response);
 			}
 			
 }
