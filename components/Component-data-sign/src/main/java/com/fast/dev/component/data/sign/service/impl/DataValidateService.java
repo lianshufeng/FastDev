@@ -148,9 +148,11 @@ public class DataValidateService {
 	 */
 	private void sendExcption(HttpServletRequest request, HttpServletResponse response,
 			DataValidateResult dataValidateResult) throws Exception {
+		Map<String, Object> result = new HashMap<String, Object>();
 		ExceptionResult<Object> exceptionResult = new ExceptionResult<Object>();
 		exceptionResult.setException(new ExceptionModel("error", dataValidateResult.name()));
-		ResponseUtil.write(request, response, exceptionResult);
+		result.put("invokerResult",exceptionResult );
+		ResponseUtil.write(request, response, result);
 	}
 
 }
