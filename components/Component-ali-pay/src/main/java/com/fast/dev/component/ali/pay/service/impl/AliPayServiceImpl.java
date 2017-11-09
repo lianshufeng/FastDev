@@ -10,10 +10,12 @@ import com.alipay.api.domain.AlipayTradeFastpayRefundQueryModel;
 import com.alipay.api.domain.AlipayTradeQueryModel;
 import com.alipay.api.domain.AlipayTradeRefundModel;
 import com.alipay.api.domain.AlipayTradeWapPayModel;
+import com.alipay.api.request.AlipayFundTransToaccountTransferRequest;
 import com.alipay.api.request.AlipayTradeFastpayRefundQueryRequest;
 import com.alipay.api.request.AlipayTradeQueryRequest;
 import com.alipay.api.request.AlipayTradeRefundRequest;
 import com.alipay.api.request.AlipayTradeWapPayRequest;
+import com.alipay.api.response.AlipayFundTransToaccountTransferResponse;
 import com.alipay.api.response.AlipayTradeFastpayRefundQueryResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.alipay.api.response.AlipayTradeRefundResponse;
@@ -163,6 +165,36 @@ public class AliPayServiceImpl implements AliPayService{
 		
 		return alipay_response;
 		
+	}
+
+	@Override
+	public AlipayFundTransToaccountTransferRequest transfer(String out_biz_no,String payee_account,String payer_show_name,String payee_real_name,String amount,String remark) {
+		//AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do","app_id","your private_key","json","GBK","alipay_public_key","RSA2");
+		AlipayClient alipayClient = ClientInit();
+		AlipayFundTransToaccountTransferRequest request = new AlipayFundTransToaccountTransferRequest();
+		request.setBizContent("{" +
+		"    \"out_biz_no\":\""+out_biz_no+"\"," +
+		"    \"payee_type\":\"ALIPAY_LOGONID\"," +
+		"    \"payee_account\":\""+payee_account+"\"," +
+		"    \"amount\":\""+amount+"\"," +
+		"    \"payer_show_name\":\""+payer_show_name+"\"," +
+		"    \"payee_real_name\":\""+payee_real_name+"\"," +
+		"    \"remark\":\""+remark+"\"," +
+		"  }");
+		
+		try {
+			AlipayFundTransToaccountTransferResponse response = alipayClient.execute(request);
+			if(response.isSuccess()){
+				System.out.println("调用成功");
+				} else {
+				System.out.println("调用失败");
+				}
+		} catch (AlipayApiException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 	
