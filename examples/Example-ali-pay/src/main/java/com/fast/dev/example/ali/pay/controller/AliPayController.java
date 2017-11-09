@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.alipay.api.request.AlipayFundTransToaccountTransferRequest;
 import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.fast.dev.component.ali.pay.model.AliPayOrder;
 import com.fast.dev.component.ali.pay.service.AliPayService;
@@ -53,6 +54,18 @@ public class AliPayController {
 				
 				//返回静态页面添加到页面中
 				return new InvokerResult<>(request);
+			}
+			
+			
+			/*
+			 * 转账
+			 */
+			@RequestMapping("transfer.json")
+			public InvokerResult<AlipayFundTransToaccountTransferRequest> transfer(String out_biz_no,String payee_account,String payer_show_name,String payee_real_name,String amount,String remark){
+				
+				AlipayFundTransToaccountTransferRequest request =aliPayService.transfer(out_biz_no, payee_account, payer_show_name, payee_real_name, amount, remark);
+				
+				return null;
 			}
 			
 }
