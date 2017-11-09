@@ -168,7 +168,7 @@ public class AliPayServiceImpl implements AliPayService{
 	}
 
 	@Override
-	public AlipayFundTransToaccountTransferRequest transfer(String out_biz_no,String payee_account,String payer_show_name,String payee_real_name,String amount,String remark) {
+	public AlipayFundTransToaccountTransferResponse transfer(String out_biz_no,String payee_account,String payer_show_name,String payee_real_name,String amount,String remark) {
 		//AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do","app_id","your private_key","json","GBK","alipay_public_key","RSA2");
 		AlipayClient alipayClient = ClientInit();
 		AlipayFundTransToaccountTransferRequest request = new AlipayFundTransToaccountTransferRequest();
@@ -184,11 +184,7 @@ public class AliPayServiceImpl implements AliPayService{
 		
 		try {
 			AlipayFundTransToaccountTransferResponse response = alipayClient.execute(request);
-			if(response.isSuccess()){
-				System.out.println("调用成功");
-				} else {
-				System.out.println("调用失败");
-				}
+			return response;
 		} catch (AlipayApiException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
