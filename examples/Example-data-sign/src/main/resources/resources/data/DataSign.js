@@ -5,7 +5,7 @@ var Crc32=function(){var signed_crc_table=function(){var c=0,table=new Array(256
 /**
 * 数据签名
 */
-var DataiSign = function (token,option){
+var DataSign = function (token,option){
     
     var _config = {
         'option' : {
