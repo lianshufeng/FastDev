@@ -48,7 +48,7 @@ public class TestController {
 		Map<String, Object> data = new HashMap<String, Object>() {
 			{
 				put("l", 1234567890);
-				put("z1", "各种特殊符号和!@&$*!@&djpfjfd  _)~#*_][]中文");
+				put("z1", "各种特殊符号和@djpfjfd][]中文");
 				put("_age", 28);
 			}
 		};
