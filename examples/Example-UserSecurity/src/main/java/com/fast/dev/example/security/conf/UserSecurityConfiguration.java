@@ -3,8 +3,8 @@ package com.fast.dev.example.security.conf;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.fast.dev.component.user.security.model.UserSecurityConfig;
 import com.fast.dev.core.util.code.JsonUtil;
-import com.fast.dev.user.security.model.UserSecurityConfig;
 
 /**
  * 配置用户权限

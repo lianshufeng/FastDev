@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="DataSign.js"></script>
+</head>
+<body>
+	<script type="text/javascript">
+
+	//测试
+	var data = {
+	    'z1':'各种特殊符号和@djpfjfd][]中文',
+	    '_age':28
+	};
+	//请求的url
+	var url = 'http://test.hongyuanweilai.com/demo/getInfo?l=1234567890';
+	//实例化数据签名对象
+	var sd = new DataSign('TestToken');
+	//取签名时间
+	var time = new Date(2017,11,6,10,30,0).getTime();
+
+
+
+	var result = sd.sign(time,url,data);
+	alert(JSON.stringify(result));
+
+	var info = '';
+	for (var key in data){
+	    info += key+"="+data[key]+"&";
+	}
+	result = sd.sign(time,url,info);
+	alert(result);
+
+	
+	</script>
+</body>
+</html>

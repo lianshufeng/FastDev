@@ -4,9 +4,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Component;
 
+import com.fast.dev.component.user.security.model.UserRole;
+import com.fast.dev.component.user.security.service.UserSecurityService;
 import com.fast.dev.example.security.model.UserInfo;
-import com.fast.dev.user.security.model.UserRole;
-import com.fast.dev.user.security.service.UserSecurityService;
 
 @Component
 public class UserSecurityServiceImpl implements UserSecurityService<UserInfo> {
