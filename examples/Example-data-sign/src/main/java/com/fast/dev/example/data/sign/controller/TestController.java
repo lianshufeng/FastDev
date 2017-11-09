@@ -11,8 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.fast.dev.component.data.sign.constant.StringConstant;
 import com.fast.dev.component.data.sign.util.DataSignUtil;
 import com.fast.dev.core.model.InvokerResult;
+import com.fast.dev.core.util.code.Crc32Util;
 import com.fast.dev.core.util.code.JsonUtil;
 
 @Controller
@@ -40,13 +42,13 @@ public class TestController {
 		// 当前时间
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(2017, 11, 6, 10, 30, 0);
-		long time = calendar.getTimeInMillis();
+		long time = (calendar.getTimeInMillis() /1000)*1000;
 
 		// 提交数据
 		Map<String, Object> data = new HashMap<String, Object>() {
 			{
 				put("l", 1234567890);
-				put("z1", "this is str 中文汉汉字(!$()1 @（）！");
+				put("z1", "各种特殊符号和!@&$*!@&djpfjfd  _)~#*_][]中文");
 				put("_age", 28);
 			}
 		};
@@ -59,11 +61,12 @@ public class TestController {
 		for (String key : parameters) {
 			String val = String.valueOf(data.get(key));
 			info += key + "=" + val + "&";
-			outputStream.write(val.getBytes());
+			outputStream.write(val.getBytes(StringConstant.DefaultCharset));
 		}
 		outputStream.flush();
 		outputStream.close();
 		byte[] datas = outputStream.toByteArray();
+		System.out.println(new String(datas));
 
 		// 数据摘要
 		long hash = DataSignUtil.sign(TestToken, time, datas);
@@ -73,5 +76,7 @@ public class TestController {
 		url += "_time=" + time + "&_hash=" + hash;
 
 		System.out.println(url);
+		
+		
 	}
 }
