@@ -48,7 +48,7 @@ public class SignUtils {
 	}
 	
 	//验签方法
-	public static boolean validation(Map<String, String> params,String sign,String publicKey){
+	public static boolean validation(Map<String, String> params,String publicKey){
 		try {
 			return AlipaySignature.rsaCheckV2(params, publicKey, "UTF-8", AlipayConstants.SIGN_TYPE_RSA2);
 		} catch (AlipayApiException e) {

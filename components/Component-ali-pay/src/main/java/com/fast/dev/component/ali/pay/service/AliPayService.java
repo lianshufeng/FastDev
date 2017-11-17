@@ -96,5 +96,6 @@ public interface AliPayService {
 	 * @param publicKey
 	 * @return
 	 */
-	public boolean ValidationSign(Map<String, String> params,String sign);
+	public boolean ValidationSign(Map<String, String> params);
+
 }

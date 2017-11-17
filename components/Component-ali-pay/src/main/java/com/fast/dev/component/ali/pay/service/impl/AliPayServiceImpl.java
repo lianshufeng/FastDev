@@ -242,10 +242,10 @@ public class AliPayServiceImpl implements AliPayService{
 		return null;
 	}
 
+
 	@Override
-	public boolean ValidationSign(Map<String, String> params,String sign) {
-		SignUtils.validation(params, sign, aliPayConfig.getALIPAY_PUBLIC_KEY());
-		return false;
+	public boolean ValidationSign(Map<String, String> params) {
+		return SignUtils.validation(params, aliPayConfig.getALIPAY_PUBLIC_KEY());
 	}
 
 	
