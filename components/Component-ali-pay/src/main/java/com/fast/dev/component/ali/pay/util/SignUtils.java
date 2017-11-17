@@ -3,8 +3,10 @@ package com.fast.dev.component.ali.pay.util;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.Map;
 
 import com.alipay.api.AlipayApiException;
+import com.alipay.api.AlipayConstants;
 import com.alipay.api.internal.util.AlipaySignature;
 
 public class SignUtils {
@@ -46,9 +48,9 @@ public class SignUtils {
 	}
 	
 	//验签方法
-	public static boolean validation(String content,String sign,String publicKey){
+	public static boolean validation(Map<String, String> params,String sign,String publicKey){
 		try {
-			return  AlipaySignature.rsa256CheckContent(content, sign, publicKey, "UTF-8");
+			return AlipaySignature.rsaCheckV2(params, publicKey, "UTF-8", AlipayConstants.SIGN_TYPE_RSA2);
 		} catch (AlipayApiException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
