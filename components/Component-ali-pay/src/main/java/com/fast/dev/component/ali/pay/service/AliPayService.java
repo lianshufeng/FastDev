@@ -87,5 +87,12 @@ public interface AliPayService {
 	 */
 	public AlipayFundTransToaccountTransferResponse transfer(String out_biz_no,String payee_account,String payer_show_name,String payee_real_name,String amount,String remark);
 
-	
+	/**
+	 * 验签接口
+	 * @param content
+	 * @param sign
+	 * @param publicKey
+	 * @return
+	 */
+	public boolean ValidationSign(String content,String sign);
 }

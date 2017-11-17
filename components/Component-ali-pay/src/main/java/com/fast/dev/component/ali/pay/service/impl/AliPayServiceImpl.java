@@ -28,6 +28,7 @@ import com.fast.dev.component.ali.pay.model.AliPayConfig;
 import com.fast.dev.component.ali.pay.model.AliPayOrder;
 import com.fast.dev.component.ali.pay.service.AliPayService;
 import com.fast.dev.component.ali.pay.util.OrderInfoUtil;
+import com.fast.dev.component.ali.pay.util.SignUtils;
 
 @Component
 public class AliPayServiceImpl implements AliPayService{
@@ -239,6 +240,12 @@ public class AliPayServiceImpl implements AliPayService{
 		}
 		
 		return null;
+	}
+
+	@Override
+	public boolean ValidationSign(String content, String sign) {
+		SignUtils.validation(content, sign, aliPayConfig.getALIPAY_PUBLIC_KEY());
+		return false;
 	}
 
 	

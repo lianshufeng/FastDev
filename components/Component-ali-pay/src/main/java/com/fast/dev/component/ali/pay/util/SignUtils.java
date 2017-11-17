@@ -4,6 +4,9 @@ import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.internal.util.AlipaySignature;
+
 public class SignUtils {
 
 
@@ -41,4 +44,17 @@ public class SignUtils {
 
 		return null;
 	}
+	
+	//验签方法
+	public static boolean validation(String content,String sign,String publicKey){
+		try {
+			return  AlipaySignature.rsa256CheckContent(content, sign, publicKey, "UTF-8");
+		} catch (AlipayApiException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		
+	}
+
 }
