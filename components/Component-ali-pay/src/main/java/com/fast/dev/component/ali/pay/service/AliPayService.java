@@ -1,7 +1,7 @@
 package com.fast.dev.component.ali.pay.service;
 
-import com.alipay.api.request.AlipayFundTransToaccountTransferRequest;
 import com.alipay.api.response.AlipayFundTransToaccountTransferResponse;
+import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.alipay.api.response.AlipayTradeFastpayRefundQueryResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.alipay.api.response.AlipayTradeRefundResponse;
@@ -9,7 +9,6 @@ import com.fast.dev.component.ali.pay.model.AliPayOrder;
 
 public interface AliPayService {
 
-	
 	/**
 	 * 订单支付
 	 * @param aliPayOrder
@@ -17,6 +16,12 @@ public interface AliPayService {
 	 */
 	public String pay(AliPayOrder aliPayOrder);
 	
+	/**
+	 * APP订单支付
+	 * @param aliPayOrder
+	 * @return
+	 */
+	public String appPay(AliPayOrder aliPayOrder);
 	/**
 	 * 查询订单 
 	 * @param out_trade_no  商户订单号，商户网站订单系统中唯一订单号，必填
@@ -82,4 +87,5 @@ public interface AliPayService {
 	 */
 	public AlipayFundTransToaccountTransferResponse transfer(String out_biz_no,String payee_account,String payer_show_name,String payee_real_name,String amount,String remark);
 
+	
 }
