@@ -17,7 +17,7 @@
 			<input type="hidden" value="height" name="names" /> 
 			<input type="hidden" value="G_Grade" name="names" />
 			<input type="hidden" value="G_Major" name="names" />
-			<input type="hidden" value="0c7255dc1d8145e9bd5b70ea1cd8c314"  name="_uToken" />
+			<input type="hidden" value="68365def4882429ca766c670b35485f4"  name="_uToken" />
 	</form>
 
 	<script type="text/javascript">
@@ -25,8 +25,9 @@
 		var data = "names=G_NickName&names=G_Logo&names=G_DateOfBirth&names=G_City&names=height&names=G_Grade&names=G_Major&_uToken=0c7255dc1d8145e9bd5b70ea1cd8c314";
 		//请求的url
 		var url = 'http://127.0.0.1:8080/PServer/test.json';
+		var sToken = '9d5f0313cadd44e1bf25ef5a16158c71';
 		//实例化数据签名对象
-		var sd = new DataSign('28dc0adcf1dd417cb9476675d15c4584');
+		var sd = new DataSign(sToken);
 		//取签名时间
 		var time = new Date(2017, 11, 6, 10, 30, 0).getTime();
 		var data = $('#dataForm').serialize();
