@@ -63,6 +63,9 @@ public class AliPayServiceImpl implements AliPayService{
 			
 			boolean ras2 =true;
 			
+			//设置通知地址
+			aliPayOrder.setNotify_url(aliPayConfig.notify_url);
+			
 			Map<String, String> params = OrderInfoUtil.buildOrderParamMap(aliPayConfig.getAPPID().toString(), ras2,aliPayOrder);
 			
 			String orderParam = OrderInfoUtil.buildOrderParam(params);

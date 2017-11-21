@@ -14,6 +14,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.fast.dev.component.ali.pay.model.AliPayConfig;
 import com.fast.dev.component.ali.pay.model.AliPayOrder;
 
 public class OrderInfoUtil {
@@ -24,6 +27,9 @@ public class OrderInfoUtil {
 	 * @param target_id
 	 * @return
 	 */
+	@Autowired
+	public AliPayConfig aliPayConfig;
+	
 	public static Map<String, String> buildOrderParamMap(String app_id, boolean rsa2,AliPayOrder aliPayOrder) {
 		Map<String, String> keyValues = new HashMap<String, String>();
 
@@ -42,6 +48,8 @@ public class OrderInfoUtil {
 		keyValues.put("timestamp", getTimestampString());
 
 		keyValues.put("version", "1.0");
+		
+		keyValues.put("notify_url",aliPayOrder.getNotify_url());
 		
 		return keyValues;
 	}

@@ -37,6 +37,18 @@ public class AliPayOrder {
 	    //[示例值:FACE_TO_FACE_PAYMENT]
 	    private String product_code;
 
+	    private String notify_url;
+	    
+	    
+	    
+		public String getNotify_url() {
+			return notify_url;
+		}
+
+		public void setNotify_url(String notify_url) {
+			this.notify_url = notify_url;
+		}
+
 		public String getOut_trade_no() {
 			return out_trade_no;
 		}
