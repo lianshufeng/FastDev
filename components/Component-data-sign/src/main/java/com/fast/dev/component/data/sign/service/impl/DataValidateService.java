@@ -151,7 +151,8 @@ public class DataValidateService {
 		Map<String, Object> result = new HashMap<String, Object>();
 		ExceptionResult<Object> exceptionResult = new ExceptionResult<Object>();
 		exceptionResult.setException(new ExceptionModel("error", dataValidateResult.name()));
-		result.put("invokerResult",exceptionResult );
+		result.put("invokerResult", exceptionResult);
+		response.addHeader("Access-Control-Allow-Origin", "*");
 		ResponseUtil.write(request, response, result);
 	}
 
