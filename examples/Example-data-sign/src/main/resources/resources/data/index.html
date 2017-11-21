@@ -4,35 +4,47 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script type="text/javascript" src="DataSign.js"></script>
+<script type="text/javascript"
+	src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 </head>
 <body>
+
+	<form action="POST" id="dataForm">
+			<input type="hidden" value="G_NickName" name="names" /> 
+			<input	type="hidden" value="G_Logo" name="names" /> 
+			<input type="hidden" 	value="G_DateOfBirth" name="names" /> 
+			<input type="hidden" 	value="G_City" name="names" /> 
+			<input type="hidden" value="height" name="names" /> 
+			<input type="hidden" value="G_Grade" name="names" />
+			<input type="hidden" value="G_Major" name="names" />
+			<input type="hidden" value="68365def4882429ca766c670b35485f4"  name="_uToken" />
+	</form>
+
 	<script type="text/javascript">
+		//测试
+		var data = "names=G_NickName&names=G_Logo&names=G_DateOfBirth&names=G_City&names=height&names=G_Grade&names=G_Major&_uToken=0c7255dc1d8145e9bd5b70ea1cd8c314";
+		//请求的url
+		var url = 'http://127.0.0.1:8080/PServer/test.json';
+		var sToken = '9d5f0313cadd44e1bf25ef5a16158c71';
+		//实例化数据签名对象
+		var sd = new DataSign(sToken);
+		//取签名时间
+		var time = new Date(2017, 11, 6, 10, 30, 0).getTime();
+		var data = $('#dataForm').serialize();
+		var result = sd.sign(time, url, data);
+		
+		$.post(url,result);
+		
+		/* 
+		var result = sd.sign(time, url, data);
+		alert(JSON.stringify(result)); */
 
-	//测试
-	var data = {
-	    'z1':'各种特殊符号和@djpfjfd][]中文',
-	    '_age':28
-	};
-	//请求的url
-	var url = 'http://test.hongyuanweilai.com/demo/getInfo?l=1234567890';
-	//实例化数据签名对象
-	var sd = new DataSign('TestToken');
-	//取签名时间
-	var time = new Date(2017,11,6,10,30,0).getTime();
-
-
-
-	var result = sd.sign(time,url,data);
-	alert(JSON.stringify(result));
-
-	var info = '';
-	for (var key in data){
-	    info += key+"="+data[key]+"&";
-	}
-	result = sd.sign(time,url,info);
-	alert(result);
-
-	
+		/* var info = '';
+		for (var key in data){
+		    info += key+"="+data[key]+"&";
+		}
+		result = sd.sign(time,url,info);
+		alert(result); */
 	</script>
 </body>
 </html>

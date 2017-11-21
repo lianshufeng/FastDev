@@ -21,7 +21,7 @@ import com.fast.dev.core.util.code.JsonUtil;
 public class TestController {
 
 	// 测试令牌
-	public static final String TestToken = "TestToken";
+	public static final String TestToken = "28dc0adcf1dd417cb9476675d15c4584";
 
 	// http://127.0.0.1:8080/PServer/test.json?_age=28&l=1234567890&z1=this is str
 	// 中文汉汉字(!$()1 @（）！&_time=1512527400151&_hash=3394873984
@@ -32,7 +32,7 @@ public class TestController {
 	 * @throws Exception
 	 */
 	@RequestMapping("test.json")
-	public Object test(HttpServletRequest request, int _age, String z1, long l) throws Exception {
+	public Object test(HttpServletRequest request) throws Exception {
 		System.out.println(JsonUtil.toJson(request.getParameterMap()));
 		return new InvokerResult<Object>("ok");
 	}
@@ -68,15 +68,19 @@ public class TestController {
 		byte[] datas = outputStream.toByteArray();
 		System.out.println(new String(datas));
 
+		
+		datas = "names=G_NickName&names=G_Logo&names=G_DateOfBirth&names=G_City&names=height&names=G_Grade&names=G_Major&_uToken=0c7255dc1d8145e9bd5b70ea1cd8c314".getBytes();
+		
 		// 数据摘要
 		long hash = DataSignUtil.sign(TestToken, time, datas);
 
-		String url = "http://127.0.0.1:8080/PServer/test.json?";
-		url += info;
-		url += "_time=" + time + "&_hash=" + hash;
-
-		System.out.println(url);
+//		String url = "http://127.0.0.1:8080/PServer/test.json?";
+//		url += info;
+//		url += "_time=" + time + "&_hash=" + hash;
+//
+//		System.out.println(url);
 		
+		System.out.println(hash);
 		
 	}
 }
