@@ -35,7 +35,11 @@ var DataSign = function (token,option){
             }
             var kv = kvs[k].split('=');
             if ( kv.length > 1 ){
-                object[kv[0]] = kv[1];
+            	if (object[kv[0]]){
+            		object[kv[0]].push( kv[1] );
+            	}else{
+            		object[kv[0]] = [ kv[1] ];
+            	}
             }else if ( kv.length > 0 ){
                 object[kv[0]] = null;
             }

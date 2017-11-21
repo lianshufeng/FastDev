@@ -17,7 +17,7 @@ public class DataValidateManagerImpl implements DataValidateManager {
 		// 2017-11-06 10:30:00
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(2017, 11, 6, 10, 30, 0);
-		return new ValidateSecretToken("TestToken", calendar.getTimeInMillis());
+		return new ValidateSecretToken("28dc0adcf1dd417cb9476675d15c4584", calendar.getTimeInMillis());
 	}
 
 }
