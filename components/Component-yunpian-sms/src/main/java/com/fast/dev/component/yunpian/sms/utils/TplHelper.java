@@ -1,4 +1,4 @@
-package com.fast.dev.example.yunpian.sms.util;
+package com.fast.dev.component.yunpian.sms.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

@@ -1,25 +1,34 @@
 package com.fast.dev.component.ali.pay.service.impl;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.domain.AlipayTradeAppPayModel;
 import com.alipay.api.domain.AlipayTradeFastpayRefundQueryModel;
 import com.alipay.api.domain.AlipayTradeQueryModel;
 import com.alipay.api.domain.AlipayTradeRefundModel;
 import com.alipay.api.domain.AlipayTradeWapPayModel;
+import com.alipay.api.request.AlipayFundTransToaccountTransferRequest;
+import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.request.AlipayTradeFastpayRefundQueryRequest;
 import com.alipay.api.request.AlipayTradeQueryRequest;
 import com.alipay.api.request.AlipayTradeRefundRequest;
 import com.alipay.api.request.AlipayTradeWapPayRequest;
+import com.alipay.api.response.AlipayFundTransToaccountTransferResponse;
+import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.alipay.api.response.AlipayTradeFastpayRefundQueryResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.alipay.api.response.AlipayTradeRefundResponse;
 import com.fast.dev.component.ali.pay.model.AliPayConfig;
 import com.fast.dev.component.ali.pay.model.AliPayOrder;
 import com.fast.dev.component.ali.pay.service.AliPayService;
+import com.fast.dev.component.ali.pay.util.OrderInfoUtil;
+import com.fast.dev.component.ali.pay.util.SignUtils;
 
 @Component
 public class AliPayServiceImpl implements AliPayService{
@@ -49,6 +58,27 @@ public class AliPayServiceImpl implements AliPayService{
 		return form;
 	}
 	
+	//支付订单
+		public String appPay(AliPayOrder aliPayOrder){
+			
+			boolean ras2 =true;
+			
+			Map<String, String> params = OrderInfoUtil.buildOrderParamMap(aliPayConfig.getAPPID().toString(), ras2,aliPayOrder);
+			
+			String orderParam = OrderInfoUtil.buildOrderParam(params);
+			
+			String privateKey =aliPayConfig.getRSA_PRIVATE_KEY();
+			
+			String sign = OrderInfoUtil.getSign(params, privateKey, ras2);
+			
+			String orderInfo = orderParam + "&" + sign;
+			
+			//返回orderInfo 给前端，让其支付
+			orderInfo = orderInfo.replaceAll("\\+", "%20");
+			
+			return orderInfo;
+		}
+	
 	//1.初始化信息
 	public AlipayClient ClientInit(){
 		
@@ -56,6 +86,27 @@ public class AliPayServiceImpl implements AliPayService{
 		
 		return client;
 		
+	}
+	
+	public AlipayTradeAppPayRequest InitAppPayModel(AliPayOrder aliPayOrder){
+		
+		AlipayTradeAppPayRequest alipay_request = new AlipayTradeAppPayRequest();
+		
+		AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
+		
+		model.setOutTradeNo(aliPayOrder.getOut_trade_no());
+	    model.setSubject(aliPayOrder.getSubject());
+	    model.setTotalAmount(aliPayOrder.getTotal_amount());
+	    model.setBody(aliPayOrder.getBody());
+	    model.setTimeoutExpress(aliPayOrder.getTimeout_express());
+	    model.setProductCode(aliPayOrder.getProduct_code());
+	    
+	    alipay_request.setBizModel(model);
+	    
+	    //设置异步通知地址
+	    alipay_request.setNotifyUrl(aliPayConfig.notify_url);
+		
+	    return alipay_request;
 	}
 	
 	//2.封装订单信息
@@ -163,6 +214,38 @@ public class AliPayServiceImpl implements AliPayService{
 		
 		return alipay_response;
 		
+	}
+
+	@Override
+	public AlipayFundTransToaccountTransferResponse transfer(String out_biz_no,String payee_account,String payer_show_name,String payee_real_name,String amount,String remark) {
+		//AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do","app_id","your private_key","json","GBK","alipay_public_key","RSA2");
+		AlipayClient alipayClient = ClientInit();
+		AlipayFundTransToaccountTransferRequest request = new AlipayFundTransToaccountTransferRequest();
+		request.setBizContent("{" +
+		"    \"out_biz_no\":\""+out_biz_no+"\"," +
+		"    \"payee_type\":\"ALIPAY_LOGONID\"," +
+		"    \"payee_account\":\""+payee_account+"\"," +
+		"    \"amount\":\""+amount+"\"," +
+		"    \"payer_show_name\":\""+payer_show_name+"\"," +
+		"    \"payee_real_name\":\""+payee_real_name+"\"," +
+		"    \"remark\":\""+remark+"\"," +
+		"  }");
+		
+		try {
+			AlipayFundTransToaccountTransferResponse response = alipayClient.execute(request);
+			return response;
+		} catch (AlipayApiException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+
+	@Override
+	public boolean ValidationSign(Map<String, String> params) {
+		return SignUtils.validation(params, aliPayConfig.getALIPAY_PUBLIC_KEY());
 	}
 
 	
