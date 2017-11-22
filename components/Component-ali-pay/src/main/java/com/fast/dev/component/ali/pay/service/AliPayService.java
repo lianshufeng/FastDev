@@ -2,6 +2,8 @@ package com.fast.dev.component.ali.pay.service;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.alipay.api.response.AlipayFundTransToaccountTransferResponse;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.alipay.api.response.AlipayTradeFastpayRefundQueryResponse;
@@ -96,6 +98,6 @@ public interface AliPayService {
 	 * @param publicKey
 	 * @return
 	 */
-	public boolean ValidationSign(Map<String, String> params);
+	public boolean ValidationSign(HttpServletRequest  request);
 
 }
