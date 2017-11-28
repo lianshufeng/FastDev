@@ -1,0 +1,7 @@
+{
+    "ucloudPublicKey": "EPEVvCFbQ9PboTXQThCKYa9T303QtwXhG6iI8em37LxlpKQ2umx52A==",
+    "ucloudPrivateKey": "b56e3f61b0c95f827e97243b7aaee624bbf7f908",
+    "proxySuffix": ".cn-gd.ufileos.com",
+    "downloadProxySuffix": ".cn-gd.ufileos.com",
+    "bucketName":"hykj"
+}
