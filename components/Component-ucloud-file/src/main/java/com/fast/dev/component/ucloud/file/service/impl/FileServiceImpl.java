@@ -33,8 +33,13 @@ public class FileServiceImpl implements FileService{
 		boolean isUpload=false;
 		
 		String bucketName = uCloudFileConfig.getBucketName();
-		String configPath =this.getClass().getClassLoader().getResource("/").getPath().substring(1) +"config.properties";
+		int i = 0;
 		
+		if(System.getProperty("os.name").toLowerCase().startsWith("win")) {
+			i =1;
+		}
+		
+		String configPath =this.getClass().getClassLoader().getResource("/").getPath().substring(i) +"config.properties";
 		//System.out.println(configPath);
 		
 		UFileConfig.getInstance().loadConfig(configPath);

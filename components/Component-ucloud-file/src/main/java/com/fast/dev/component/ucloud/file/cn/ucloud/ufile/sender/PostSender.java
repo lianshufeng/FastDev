@@ -1,4 +1,4 @@
-package com.fast.dev.component.ucloud.file.cn.ucloud.ufile.sender;
+/*package com.fast.dev.component.ucloud.file.cn.ucloud.ufile.sender;
 
 
 
@@ -96,3 +96,4 @@ public class PostSender implements Sender {
 		return null;
 	}
 }
+*/

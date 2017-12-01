@@ -7,17 +7,20 @@
   		<artifactId>PCore</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
-  	
-  <!-- 	<dependency>
-    <groupId>org.apache.directory.studio</groupId>
-    <artifactId>org.apache.commons.codec</artifactId>
-    <version>1.8</version>
-</dependency>
-
+<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime -->
 <dependency>
     <groupId>org.apache.httpcomponents</groupId>
-    <artifactId>httpclient</artifactId>
-    <version>4.5.3</version>
+    <artifactId>httpmime</artifactId>
+    <version>4.3.6</version>
+</dependency>
+
+
+
+<dependency>
+    <groupId>commons-httpclient</groupId>
+    <artifactId>commons-httpclient</artifactId>
+    <version>3.1</version>
 </dependency>
 
 <dependency>
@@ -25,13 +28,6 @@
     <artifactId>gson</artifactId>
     <version>2.8.2</version>
 </dependency>
-
-https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-<dependency>
-    <groupId>org.apache.commons</groupId>
-    <artifactId>commons-lang3</artifactId>
-    <version>3.7</version>
-</dependency> -->
 
   </dependencies>
   <parent>

@@ -1,4 +1,4 @@
-package com.fast.dev.component.ucloud.file.cn.ucloud.ufile.sender;
+/*package com.fast.dev.component.ucloud.file.cn.ucloud.ufile.sender;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -193,3 +193,4 @@ public class UploadHitSender implements Sender {
 		return null;
 	}
 }
+*/
