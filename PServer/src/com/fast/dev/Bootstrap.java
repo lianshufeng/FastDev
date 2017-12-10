@@ -1,5 +1,7 @@
 package com.fast.dev;
 
+import java.io.File;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
@@ -30,7 +32,11 @@ public class Bootstrap implements WebApplicationInitializer {
 		// 扫描的包名
 		String packageName = this.getClass().getPackage().getName();
 		// // 初始化资源
-		ResourcesInit.init(appContext.getRealPath("/"), packageName);
+		try {
+			ResourcesInit.init(new File(appContext.getResource("/").toURI()).getAbsolutePath(), packageName);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		// 配置spring
 		AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
 		applicationContext.scan(packageName);
