@@ -49,7 +49,6 @@ public class DataValidateService {
 			throws Exception {
 		String timeName = dataSignConfig.getParameter().getRequestTimeName();
 		String hashName = dataSignConfig.getParameter().getRequestHashName();
-
 		// 时间
 		String timeValue = request.getParameter(timeName);
 		// 数据摘要
@@ -123,7 +122,6 @@ public class DataValidateService {
 		arrayOutputStream.flush();
 		byte[] buff = arrayOutputStream.toByteArray();
 		arrayOutputStream.close();
-
 		// 进行数据签名
 		long dataHash = DataSignUtil.sign(validateSecretToken.getSecretToken(), timeValue, buff);
 		return dataHash == hashValue;
