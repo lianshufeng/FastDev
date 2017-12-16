@@ -33,7 +33,7 @@ public class TestController {
 	 */
 	@RequestMapping("test.json")
 	public Object test(HttpServletRequest request) throws Exception {
-		System.out.println(JsonUtil.toJson(request.getParameterMap()));
+		System.out.println("test.json:"+JsonUtil.toJson(request.getParameterMap()));
 		return new InvokerResult<Object>("ok");
 	}
 

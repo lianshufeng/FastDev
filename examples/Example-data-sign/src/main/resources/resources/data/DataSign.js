@@ -69,6 +69,13 @@ var DataSign = function (token,option){
     }
     
     /**
+     * 给原始的数据解码
+     */
+    var decodeUrlData = function(data){
+    	return decodeURIComponent(data).split('+').join(' ');
+    }
+    
+    /**
     * 数据签名
     */
     this.sign = function( time , url , data ){
@@ -85,7 +92,10 @@ var DataSign = function (token,option){
         //排序key
         var keys = new Array();
         for (var i in obj){
-            keys.push(i);
+        	//对key进行解码
+        	var key = decodeUrlData(i);
+            obj[key] = obj[i];
+            keys.push(key);
         }
         keys.sort();
         //组合数据
@@ -97,12 +107,16 @@ var DataSign = function (token,option){
             var val = obj[keys[i]];
             //数组内容排序
             if ( val instanceof Array ){
+            	//解码
+            	val.forEach(function(v,i, arr){
+            		arr[i] = decodeUrlData(v);
+            	});
+                //排序
                 val.sort();
-                for (var v in val){
-                    datas.push(val[v]+'');
-                }
+                datas = datas.concat(val);
             }else{
-                datas.push(val+'');
+            	//解码并添加到数组中
+                datas.push( decodeUrlData(val) );
             }
         }
         //增加时间

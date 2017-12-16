@@ -10,13 +10,14 @@
 <body>
 
 	<form action="POST" id="dataForm">
+			<input type="hidden" value="G_NickName344()*#(!)" name="中文名称" />
 			<input type="hidden" value="G_NickName" name="names" /> 
 			<input	type="hidden" value="G_Logo" name="names" /> 
 			<input type="hidden" 	value="G_DateOfBirth" name="names" /> 
 			<input type="hidden" 	value="G_City" name="names" /> 
-			<input type="hidden" value="height" name="names" /> 
-			<input type="hidden" value="G_Grade" name="names" />
-			<input type="hidden" value="G_Major" name="names" />
+			<input type="hidden" value=" 中 文∏dhfh #((#)D)ei e11 ':'ss$!(@*$)','ddd39473'}" name="names" /> 
+			<input type="hidden" value="特殊符号" name="names" />
+			<input type="hidden" value="中文测试" name="names" />
 			<input type="hidden" value="68365def4882429ca766c670b35485f4"  name="_uToken" />
 	</form>
 
@@ -32,7 +33,6 @@
 		var time = new Date(2017, 11, 6, 10, 30, 0).getTime();
 		var data = $('#dataForm').serialize();
 		var result = sd.sign(time, url, data);
-		
 		$.post(url,result);
 		
 		/* 
