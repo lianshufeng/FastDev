@@ -3,7 +3,6 @@ package com.fast.dev.component.data.sign.service.impl;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.fast.dev.component.data.sign.constant.StringConstant;
+import com.fast.dev.component.data.sign.excption.DataSignException;
 import com.fast.dev.component.data.sign.model.DataSignConfig;
 import com.fast.dev.component.data.sign.model.ValidateSecretToken;
 import com.fast.dev.component.data.sign.request.CacheRequestWapper;
@@ -24,9 +24,6 @@ import com.fast.dev.component.data.sign.request.ParameterMapHelper;
 import com.fast.dev.component.data.sign.service.DataValidateManager;
 import com.fast.dev.component.data.sign.type.DataValidateResult;
 import com.fast.dev.component.data.sign.util.DataSignUtil;
-import com.fast.dev.core.model.ExceptionModel;
-import com.fast.dev.core.model.ExceptionResult;
-import com.fast.dev.core.util.ResponseUtil;
 
 @Component
 public class DataValidateService {
@@ -197,12 +194,7 @@ public class DataValidateService {
 	 */
 	private void sendExcption(HttpServletRequest request, HttpServletResponse response,
 			DataValidateResult dataValidateResult) throws Exception {
-		Map<String, Object> result = new HashMap<String, Object>();
-		ExceptionResult<Object> exceptionResult = new ExceptionResult<Object>();
-		exceptionResult.setException(new ExceptionModel("error", dataValidateResult.name()));
-		result.put("invokerResult", exceptionResult);
-		response.addHeader("Access-Control-Allow-Origin", "*");
-		ResponseUtil.write(request, response, result);
+		throw new DataSignException(dataValidateResult);
 	}
 
 }
