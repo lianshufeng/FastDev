@@ -72,7 +72,7 @@ var DataSign = function (token,option){
      * 给原始的数据解码
      */
     var decodeUrlData = function(data){
-    	return decodeURIComponent(data).split('+').join(' ');
+    	return data + '';
     }
     
     /**
@@ -92,11 +92,9 @@ var DataSign = function (token,option){
         //排序key
         var keys = new Array();
         for (var i in obj){
-        	//对key进行解码
-        	var key = decodeUrlData(i);
-            obj[key] = obj[i];
-            keys.push(key);
+    		keys.push(i);
         }
+        //key 排序
         keys.sort();
         //组合数据
         var datas = new Array();

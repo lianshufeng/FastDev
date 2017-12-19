@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.fast.dev.component.data.sign.constant.StringConstant;
 import com.fast.dev.component.data.sign.util.DataSignUtil;
 import com.fast.dev.core.model.InvokerResult;
-import com.fast.dev.core.util.code.Crc32Util;
 import com.fast.dev.core.util.code.JsonUtil;
 
 @Controller
@@ -32,8 +31,9 @@ public class TestController {
 	 * @throws Exception
 	 */
 	@RequestMapping("test.json")
-	public Object test(HttpServletRequest request) throws Exception {
-		System.out.println("test.json:"+JsonUtil.toJson(request.getParameterMap()));
+	public Object test(HttpServletRequest request, String _time,String[] names) throws Exception {
+		System.out.println("test.json:" + JsonUtil.toJson(request.getParameterMap()));
+		System.out.println(request.getParameter("_time"));
 		return new InvokerResult<Object>("ok");
 	}
 
@@ -42,7 +42,7 @@ public class TestController {
 		// 当前时间
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(2017, 11, 6, 10, 30, 0);
-		long time = (calendar.getTimeInMillis() /1000)*1000;
+		long time = (calendar.getTimeInMillis() / 1000) * 1000;
 
 		// 提交数据
 		Map<String, Object> data = new HashMap<String, Object>() {
@@ -68,19 +68,19 @@ public class TestController {
 		byte[] datas = outputStream.toByteArray();
 		System.out.println(new String(datas));
 
-		
-		datas = "names=G_NickName&names=G_Logo&names=G_DateOfBirth&names=G_City&names=height&names=G_Grade&names=G_Major&_uToken=0c7255dc1d8145e9bd5b70ea1cd8c314".getBytes();
-		
+		datas = "names=G_NickName&names=G_Logo&names=G_DateOfBirth&names=G_City&names=height&names=G_Grade&names=G_Major&_uToken=0c7255dc1d8145e9bd5b70ea1cd8c314"
+				.getBytes();
+
 		// 数据摘要
 		long hash = DataSignUtil.sign(TestToken, time, datas);
 
-//		String url = "http://127.0.0.1:8080/PServer/test.json?";
-//		url += info;
-//		url += "_time=" + time + "&_hash=" + hash;
-//
-//		System.out.println(url);
-		
+		// String url = "http://127.0.0.1:8080/PServer/test.json?";
+		// url += info;
+		// url += "_time=" + time + "&_hash=" + hash;
+		//
+		// System.out.println(url);
+
 		System.out.println(hash);
-		
+
 	}
 }
