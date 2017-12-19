@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +18,9 @@ import org.springframework.util.StringUtils;
 import com.fast.dev.component.data.sign.constant.StringConstant;
 import com.fast.dev.component.data.sign.model.DataSignConfig;
 import com.fast.dev.component.data.sign.model.ValidateSecretToken;
+import com.fast.dev.component.data.sign.request.CacheRequestWapper;
+import com.fast.dev.component.data.sign.request.ParameterMapDecode;
+import com.fast.dev.component.data.sign.request.ParameterMapHelper;
 import com.fast.dev.component.data.sign.service.DataValidateManager;
 import com.fast.dev.component.data.sign.type.DataValidateResult;
 import com.fast.dev.component.data.sign.util.DataSignUtil;
@@ -36,6 +40,17 @@ public class DataValidateService {
 	@Resource
 	private ApplicationContext applicationContext;
 
+	// request的请求time的参数名
+	private String timeName;
+	// request的请求hash的参数名
+	private String hashName;
+
+	@PostConstruct
+	private void init() {
+		timeName = dataSignConfig.getParameter().getRequestTimeName();
+		hashName = dataSignConfig.getParameter().getRequestHashName();
+	}
+
 	/**
 	 * 校验请求
 	 * 
@@ -45,14 +60,14 @@ public class DataValidateService {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean validateData(HttpServletRequest request, HttpServletResponse response, Object handler)
+	public boolean validateData(CacheRequestWapper request, HttpServletResponse response, Object handler)
 			throws Exception {
-		String timeName = dataSignConfig.getParameter().getRequestTimeName();
-		String hashName = dataSignConfig.getParameter().getRequestHashName();
+		// 请求的参数
+		Map<String, String[]> parameterMap = toParameterMap(request);
 		// 时间
-		String timeValue = request.getParameter(timeName);
+		String timeValue = getParameter(parameterMap, timeName);
 		// 数据摘要
-		String hashValue = request.getParameter(hashName);
+		String hashValue = getParameter(parameterMap, hashName);
 		// 校验必要参数
 		if (StringUtils.isEmpty(timeValue)) {
 			sendExcption(request, response, DataValidateResult.TimeEmpty);
@@ -76,8 +91,6 @@ public class DataValidateService {
 			return false;
 		}
 
-		// 请求的参数
-		Map<String, String[]> parameterMap = new HashMap<String, String[]>(request.getParameterMap());
 		parameterMap.remove(hashName);
 		parameterMap.remove(timeName);
 		// 排除过滤的参数
@@ -95,6 +108,45 @@ public class DataValidateService {
 	}
 
 	/**
+	 * 参数转换为map
+	 * 
+	 * @param request
+	 * @return , 返回map的副本
+	 */
+	private static Map<String, String[]> toParameterMap(CacheRequestWapper request) {
+		// 取出内容缓存
+		byte[] contentCache = request.getContentAsByteArray();
+		// 转换为数据字典
+		return ParameterMapHelper.toParameterMap(contentCache, StringConstant.DefaultCharset, new ParameterMapDecode() {
+			@Override
+			public String value(String value) {
+				return value;
+			}
+
+			@Override
+			public String name(String name) {
+				return name;
+			}
+		});
+
+	}
+
+	/**
+	 * 通过字典参数取一个参数
+	 * 
+	 * @param parameterMap
+	 * @param name
+	 * @return
+	 */
+	private static String getParameter(Map<String, String[]> parameterMap, String name) {
+		String[] values = parameterMap.get(name);
+		if (values != null && values.length > 0) {
+			return values[0];
+		}
+		return null;
+	}
+
+	/**
 	 * 校验数据
 	 * 
 	 * @param hashValue
@@ -104,7 +156,6 @@ public class DataValidateService {
 	 */
 	private boolean validateData(long timeValue, long hashValue, ValidateSecretToken validateSecretToken,
 			Map<String, String[]> parameterMap) throws IOException {
-
 		// key排序
 		String[] keys = parameterMap.keySet().toArray(new String[parameterMap.size()]);
 		Arrays.sort(keys);

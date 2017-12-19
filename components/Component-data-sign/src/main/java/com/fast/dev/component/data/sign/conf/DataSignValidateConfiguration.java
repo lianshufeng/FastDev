@@ -19,4 +19,5 @@ public class DataSignValidateConfiguration {
 	public DataSignInterceptor dataSignInterceptor(DataSignConfig dataSignConfig) {
 		return new DataSignInterceptor(dataSignConfig);
 	}
+
 }

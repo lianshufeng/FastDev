@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fast.dev.component.data.sign.model.DataSignConfig;
+import com.fast.dev.component.data.sign.request.CacheRequestWapper;
 import com.fast.dev.component.data.sign.service.impl.DataValidateService;
 import com.fast.dev.core.interceptor.UrlInterceptor;
 
@@ -37,7 +38,11 @@ public class DataSignInterceptor implements UrlInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		return dataValidateService.validateData(request, response, handler);
+		if (request instanceof CacheRequestWapper) {
+			// 强制转换失败的原因可能是因为拦截器失效导致更换 request失败
+			return dataValidateService.validateData((CacheRequestWapper) request, response, handler);
+		}
+		return false;
 	}
 
 	@Override
