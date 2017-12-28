@@ -38,11 +38,14 @@ public class ParameterMapHelper {
 	 */
 	public static Map<String, String[]> toParameterMap(String content, ParameterMapDecode dataDecode) {
 		if (StringUtils.isEmpty(content)) {
-			return null;
+			return new HashMap<String, String[]>();
 		}
 		// 转换为参数
 		Map<String, Set<String>> parameterMap = new HashMap<String, Set<String>>();
 		for (String items : content.split("&")) {
+			if (StringUtils.isEmpty(items)) {
+				continue;
+			}
 			String[] kv = items.split("=");
 			String key = null;
 			Set<String> value = null;

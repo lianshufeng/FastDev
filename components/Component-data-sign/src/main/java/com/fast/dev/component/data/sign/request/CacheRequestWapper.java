@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import org.springframework.util.StreamUtils;
 
 import com.fast.dev.component.data.sign.constant.StringConstant;
+import com.fast.dev.core.util.bytes.BytesUtil;
 
 public class CacheRequestWapper extends HttpServletRequestWrapper {
 
@@ -25,9 +26,14 @@ public class CacheRequestWapper extends HttpServletRequestWrapper {
 
 	private Map<String, String[]> cacheMap = null;
 
+	private final static byte[] splitBin = "&".getBytes();
+
 	public CacheRequestWapper(HttpServletRequest request) throws IOException {
 		super(request);
-		body = StreamUtils.copyToByteArray(request.getInputStream());
+		String query = request.getQueryString() == null ? "" : request.getQueryString();
+		byte[] postBin = StreamUtils.copyToByteArray(request.getInputStream());
+		byte[] queryBin = query.getBytes();
+		body = BytesUtil.merge(postBin, splitBin, queryBin);
 		initCacheMap();
 	}
 
