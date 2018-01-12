@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
+import com.fast.dev.component.mongodb.helper.DataUpdateHelper;
 import com.fast.dev.component.mongodb.util.EntityObjectUtil;
 import com.fast.dev.core.dao.GeneralDao;
 import com.fast.dev.core.dao.model.Orders;
@@ -31,6 +32,8 @@ public abstract class MongoDaoImpl<T> implements GeneralDao<T> {
 
 	@Autowired
 	protected MongoTemplate mongoTemplate;
+	@Autowired
+	protected DataUpdateHelper dateUpdateHelper;
 
 	// 取出当前的实体类型
 	protected Class<T> entityClass = getCls();

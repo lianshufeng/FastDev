@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -168,9 +169,8 @@ public class DataUpdateHelper {
 		Query query = new Query();
 		// 时间字段
 		String timeName = (queryTimeType == QueryTimeType.CreateTime ? CreateTimeName : UpdateTimeName);
-
-		// 时间顺序
-		Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, timeName));
+		Direction direction = directionType == QueryDirectionType.After ? Direction.ASC : Direction.DESC;
+		Sort sort = new Sort(new Sort.Order(direction, timeName));
 		query.with(sort);
 
 		// 过滤条件
@@ -214,11 +214,8 @@ public class DataUpdateHelper {
 		// 查询时间相同的数据
 		Criteria where = Criteria.where(timeName).is(timeValue);
 
-		// 排除已查询到的数据
 		if (excludeIds != null && excludeIds.size() > 0) {
-			for (String entityId : excludeIds) {
-				where.and("_id").not().is(entityId);
-			}
+			where.and("_id").nin(excludeIds);
 		}
 
 		Query query = new Query();
