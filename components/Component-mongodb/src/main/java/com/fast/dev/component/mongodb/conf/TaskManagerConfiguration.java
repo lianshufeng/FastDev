@@ -16,7 +16,7 @@ public class TaskManagerConfiguration {
 	 * @return
 	 */
 	@Bean("dBTimerHelperTaskManager")
-	public TaskManager SingleTaskManager() {
+	public TaskManager singleTaskManager() {
 		SingleTaskManager taskManager = new SingleTaskManager();
 		TaskConfig taskConfig = new TaskConfig();
 		taskConfig.setMaxSleepTime(60 * 60 * 1000);
