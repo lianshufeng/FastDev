@@ -1,4 +1,4 @@
-package com.fast.dev.component.mongodb.helper;
+package com.fast.dev.component.mongodb.helper.update;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
 import com.fast.dev.component.mongodb.dao.domain.SuperEntity;
+import com.fast.dev.component.mongodb.helper.time.DBTimerHelper;
 
 /**
  * 日期查询工具

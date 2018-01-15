@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
-import com.fast.dev.component.mongodb.helper.DataUpdateHelper;
+import com.fast.dev.component.mongodb.helper.update.DataUpdateHelper;
 import com.fast.dev.component.mongodb.util.EntityObjectUtil;
 import com.fast.dev.core.dao.GeneralDao;
 import com.fast.dev.core.dao.model.Orders;
