@@ -21,7 +21,7 @@ public class SleepTask<T> extends TimerTask {
 	private T data;
 
 	// 任务
-	private Task<T> task;
+	private Class<? extends Task<T>> taskClass;
 
 	/**
 	 * @return the singleTaskManager
@@ -54,23 +54,23 @@ public class SleepTask<T> extends TimerTask {
 	}
 
 	/**
-	 * @return the task
+	 * @return the taskClass
 	 */
-	public Task<T> getTask() {
-		return task;
+	public Class<? extends Task<T>> getTaskClass() {
+		return taskClass;
 	}
 
 	/**
-	 * @param task
-	 *            the task to set
+	 * @param taskClass
+	 *            the taskClass to set
 	 */
-	public void setTask(Task<T> task) {
-		this.task = task;
+	public void setTaskClass(Class<? extends Task<T>> taskClass) {
+		this.taskClass = taskClass;
 	}
 
 	@Override
 	public void run() {
-		this.singleTaskManager.executeThread(this.task, data);
+		this.singleTaskManager.executeThread(this.taskClass, data);
 	}
 
 }

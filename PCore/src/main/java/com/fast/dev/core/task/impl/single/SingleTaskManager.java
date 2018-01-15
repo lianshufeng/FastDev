@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.fast.dev.core.helper.NewInstanceHelper;
 import com.fast.dev.core.task.TaskManager;
 import com.fast.dev.core.task.impl.single.model.TaskConfig;
 import com.fast.dev.core.task.model.Task;
@@ -19,7 +20,7 @@ import com.fast.dev.core.task.model.Task;
  *
  */
 @SuppressWarnings("unchecked")
-public class SingleTaskManager implements TaskManager {
+public class SingleTaskManager extends NewInstanceHelper implements TaskManager {
 
 	// 任务配置
 	private TaskConfig taskConfig = new TaskConfig();
@@ -36,7 +37,7 @@ public class SingleTaskManager implements TaskManager {
 	/**
 	 * 执行线程任务
 	 */
-	protected <T> void executeThread(final Task<T> task, final T data) {
+	protected <T> void executeThread(final Class<? extends Task<T>> taskClass, final T data) {
 		if (this.threadPool == null) {
 			// 实例化线程池
 			this.threadPool = Executors.newFixedThreadPool(this.taskConfig.getMaxThreadCount());
@@ -46,11 +47,12 @@ public class SingleTaskManager implements TaskManager {
 			@Override
 			public void run() {
 				try {
+					Task<T> task = (Task<T>) newInstance(taskClass);
 					task.run(data);
 				} catch (Exception e) {
 					e.printStackTrace();
 				} finally {
-					timerTaskCache.remove(task.getClass());
+					timerTaskCache.remove(taskClass);
 				}
 			}
 		});
@@ -77,27 +79,24 @@ public class SingleTaskManager implements TaskManager {
 	}
 
 	@Override
-	public  synchronized <T>  boolean execute(Task<T> task, T data) {
-		if (task == null) {
+	public synchronized <T> boolean execute(Class<? extends Task<T>> taskClass, T data) {
+		if (taskClass == null) {
 			return false;
 		}
-		// 取执行对象的class
-		Class<?> taskCls = task.getClass();
 		// 获取休眠任务
-		SleepTask<T> sleepTask = (SleepTask<T>) this.timerTaskCache.get(taskCls);
+		SleepTask<T> sleepTask = (SleepTask<T>) this.timerTaskCache.get(taskClass);
 		if (sleepTask == null) {
 			sleepTask = new SleepTask<T>();
 			// 追加到线程安全缓存里
-			this.timerTaskCache.put(taskCls, sleepTask);
+			this.timerTaskCache.put(taskClass, sleepTask);
 			// 设置执行的任务
-			sleepTask.setTask(task);
+			sleepTask.setTaskClass(taskClass);
 			sleepTask.setSingleTaskManager(this);
 			// 添加定时器任务
 			this.timer.schedule(sleepTask, taskConfig.getMaxSleepTime());
 		}
 		sleepTask.setData(data);
 		return true;
-
 	}
 
 }

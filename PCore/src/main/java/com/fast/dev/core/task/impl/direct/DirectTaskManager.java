@@ -1,5 +1,6 @@
 package com.fast.dev.core.task.impl.direct;
 
+import com.fast.dev.core.helper.NewInstanceHelper;
 import com.fast.dev.core.task.TaskManager;
 import com.fast.dev.core.task.model.Task;
 
@@ -11,7 +12,7 @@ import com.fast.dev.core.task.model.Task;
  * @时间 2018年1月12日
  *
  */
-public class DirectTaskManager implements TaskManager {
+public class DirectTaskManager extends NewInstanceHelper implements TaskManager {
 
 	@Override
 	@Deprecated
@@ -20,8 +21,8 @@ public class DirectTaskManager implements TaskManager {
 	}
 
 	@Override
-	public <T> boolean execute(Task<T> task, T data) {
-		task.run(data);
+	public <T> boolean execute(Class<? extends Task<T>> taskClass, T data) {
+		newInstance(taskClass).run(data);
 		return true;
 	}
 

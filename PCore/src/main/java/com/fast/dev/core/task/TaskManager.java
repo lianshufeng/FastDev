@@ -15,7 +15,7 @@ public interface TaskManager {
 	/**
 	 * 执行任务
 	 */
-	public <T> boolean execute(Task<T> task, T data);
+	public <T> boolean execute(Class<? extends Task<T>> taskClass, T data);
 
 	/**
 	 * 销毁任务
