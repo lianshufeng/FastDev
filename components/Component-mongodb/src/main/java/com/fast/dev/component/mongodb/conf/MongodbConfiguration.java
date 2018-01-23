@@ -93,7 +93,7 @@ public class MongodbConfiguration {
 	 * @param passWord
 	 * @param mongoClientOptions
 	 * @return
-	 */ 
+	 */
 	private static MongoClient buildMongoClient(List<ServerAddress> serverAddressList, String dbName, String userName,
 			String passWord, MongoClientOptions mongoClientOptions) {
 
@@ -117,7 +117,8 @@ public class MongodbConfiguration {
 	private static MongoClientOptions buildMongoClientOptions(MongodbConfig mongodbConfig) {
 		int timeOut = mongodbConfig.getTimeOut();
 		MongoClientOptions mongoClientOptions = MongoClientOptions.builder().socketTimeout(timeOut)
-				.connectTimeout(timeOut).serverSelectionTimeout(timeOut).build();
+				.connectTimeout(timeOut).serverSelectionTimeout(timeOut)
+				.connectionsPerHost(mongodbConfig.getConnectionsPerHost()).build();
 		return mongoClientOptions;
 	}
 
