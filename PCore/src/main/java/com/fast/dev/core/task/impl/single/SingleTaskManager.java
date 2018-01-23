@@ -92,10 +92,12 @@ public class SingleTaskManager extends NewInstanceHelper implements TaskManager 
 			// 设置执行的任务
 			sleepTask.setTaskClass(taskClass);
 			sleepTask.setSingleTaskManager(this);
+			sleepTask.setData(data);
 			// 添加定时器任务
-			this.timer.schedule(sleepTask, taskConfig.getMaxSleepTime());
+			this.timer.schedule(sleepTask, this.taskConfig.getMaxSleepTime());
+		}else {
+			sleepTask.setData(data);
 		}
-		sleepTask.setData(data);
 		return true;
 	}
 
