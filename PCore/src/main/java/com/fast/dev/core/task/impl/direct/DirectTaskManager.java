@@ -22,6 +22,11 @@ public class DirectTaskManager extends NewInstanceHelper implements TaskManager 
 
 	@Override
 	public <T> boolean execute(Class<? extends Task<T>> taskClass, T data) {
+		return execute(taskClass.getName(), taskClass, data);
+	}
+
+	@Override
+	public <T> boolean execute(String taskName, Class<? extends Task<T>> taskClass, T data) {
 		newInstance(taskClass).run(data);
 		return true;
 	}

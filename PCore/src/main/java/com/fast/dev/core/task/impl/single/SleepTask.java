@@ -23,6 +23,9 @@ public class SleepTask<T> extends TimerTask {
 	// 任务
 	private Class<? extends Task<T>> taskClass;
 
+	// 任务的唯一名称
+	private String uniqueName;
+
 	/**
 	 * @return the singleTaskManager
 	 */
@@ -61,6 +64,21 @@ public class SleepTask<T> extends TimerTask {
 	}
 
 	/**
+	 * @return the uniqueName
+	 */
+	public String getUniqueName() {
+		return uniqueName;
+	}
+
+	/**
+	 * @param uniqueName
+	 *            the uniqueName to set
+	 */
+	public void setUniqueName(String uniqueName) {
+		this.uniqueName = uniqueName;
+	}
+
+	/**
 	 * @param taskClass
 	 *            the taskClass to set
 	 */
@@ -70,7 +88,7 @@ public class SleepTask<T> extends TimerTask {
 
 	@Override
 	public void run() {
-		this.singleTaskManager.executeThread(this.taskClass, data);
+		this.singleTaskManager.executeThread(this.taskClass, data, this.uniqueName);
 	}
 
 }

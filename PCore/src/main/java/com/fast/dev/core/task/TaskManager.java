@@ -18,6 +18,16 @@ public interface TaskManager {
 	public <T> boolean execute(Class<? extends Task<T>> taskClass, T data);
 
 	/**
+	 * 执行任务
+	 * 
+	 * @param taskName任务名
+	 * @param taskClass
+	 * @param data
+	 * @return
+	 */
+	public <T> boolean execute(String taskName, Class<? extends Task<T>> taskClass, T data);
+
+	/**
 	 * 销毁任务
 	 */
 	public void shutdown();
