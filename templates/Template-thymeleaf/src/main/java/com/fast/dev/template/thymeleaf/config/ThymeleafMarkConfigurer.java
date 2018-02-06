@@ -10,6 +10,8 @@ import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 
 import com.fast.dev.core.charset.DefaultCharSet;
 
+import nz.net.ultraq.thymeleaf.LayoutDialect;
+
 @Configuration
 public class ThymeleafMarkConfigurer {
 	/**
@@ -38,7 +40,7 @@ public class ThymeleafMarkConfigurer {
 		templateResolver.setCacheable(false);
 		return templateResolver;
 	}
-	
+
 	/**
 	 * 模版引擎解析器
 	 * 
@@ -48,6 +50,19 @@ public class ThymeleafMarkConfigurer {
 	public ITemplateEngine thymeleafTemplateEngine() {
 		SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
 		springTemplateEngine.setTemplateResolver(thymeleafTemplateResolver());
+		// 布局方言
+		springTemplateEngine.addDialect(layoutDialect());
 		return springTemplateEngine;
 	}
+
+	/**
+	 * 布局方言
+	 * 
+	 * @return
+	 */
+	@Bean
+	public LayoutDialect layoutDialect() {
+		return new LayoutDialect();
+	}
+
 }
