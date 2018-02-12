@@ -2,10 +2,10 @@ package com.fast.dev.data.transfer;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.List;
+import java.util.Map;
 
 import com.fast.dev.data.transfer.model.DataItem;
-import com.fast.dev.data.transfer.model.FileOption;
+import com.fast.dev.data.transfer.model.TableItem;
 
 /**
  * 数据导入接口
@@ -22,26 +22,13 @@ public abstract class DataOperate {
 	 * 
 	 * @param fileInputStream
 	 */
-	public abstract List<DataItem> read(InputStream inputStream);
+	public abstract Map<String, DataItem[]> read(InputStream inputStream);
 
 	/**
 	 * 写出数据流
 	 * 
 	 * @param outputStream
 	 */
-	public boolean write(OutputStream outputStream, List<DataItem> datas) {
-		return write(outputStream, datas, null);
-	}
-
-	/**
-	 * 写出数据流
-	 * 
-	 * @param outputStream
-	 * @param datas
-	 * @param option
-	 *            导出相关信息的配置
-	 * @return
-	 */
-	public abstract boolean write(OutputStream outputStream, List<DataItem> datas, FileOption option);
+	public abstract boolean write(OutputStream outputStream, TableItem... tableItems);
 
 }

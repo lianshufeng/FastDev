@@ -1,8 +1,10 @@
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -10,11 +12,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.fast.dev.core.util.code.JsonUtil;
 import com.fast.dev.data.transfer.DataOperate;
 import com.fast.dev.data.transfer.DataTransferFactory;
 import com.fast.dev.data.transfer.model.DataItem;
-import com.fast.dev.data.transfer.model.FieldInformation;
-import com.fast.dev.data.transfer.model.FileOption;
+import com.fast.dev.data.transfer.model.TableItem;
 import com.fast.dev.data.transfer.type.DataFileType;
 
 public class TestExcel {
@@ -33,46 +35,87 @@ public class TestExcel {
 	@Before
 	public void setUp() throws Exception {
 		dataOperate = DataTransferFactory.build(DataFileType.Excel);
+
+		export();
 	}
 
 	@After
 	public void tearDown() throws Exception {
 	}
 
-	@Test
 	public void export() throws Exception {
 
-		FileOption option = new FileOption();
-		option.setVersion("v1.0.0");
-		option.setFields(new ArrayList<FieldInformation>() {
+		List<DataItem> dataItems = new ArrayList<DataItem>();
+		dataItems.add(new DataItem(new Object[] { "1", null, "2", "3", 1, 1.243, 3.155 }));
+		dataItems.add(new DataItem(new Object[] { "2", 15123241353l, "2", "3", true }));
+		dataItems.add(new DataItem(new Object[] { "速度#(*!@)$*!@'ss", "2", null, "3" }));
+		dataItems.add(new DataItem(new Object[] { "4", "2", "3", "4", new Date() }));
+
+		FileOutputStream outputStream = new FileOutputStream(new File("c:/demo.xlsx"));
+		TableItem tableItem = new TableItem();
+		tableItem.setDataItems(dataItems);
+
+		tableItem.setFieldNames(new ArrayList<String>() {
 			/**
 			* 
 			*/
 			private static final long serialVersionUID = 1L;
 			{
-				add(new FieldInformation("人员id", String.class));
-				add(new FieldInformation("姓名", String.class));
-				add(new FieldInformation("负责地区", String.class));
-				add(new FieldInformation("岗位", String.class));
-				add(new FieldInformation("部门", String.class));
-				add(new FieldInformation("上级领导", String.class));
+				add("人员id");
+				add("姓名");
+				add("负责地区");
+				add("岗位");
+				add("部门");
+				add("上级领导");
 			}
 		});
 
-		List<DataItem> dataItems = new ArrayList<DataItem>();
-		dataItems.add(new DataItem(new Object[] { "1", "2", "3", 1, 1.243, 3.155 }));
-		dataItems.add(new DataItem(new Object[] { "2", "2", "3" }));
-		dataItems.add(new DataItem(new Object[] { "3", "2", "3" }));
-		dataItems.add(new DataItem(new Object[] { "4", "2", "3", "4", new Date() }));
-		FileOutputStream outputStream = new FileOutputStream(new File("c:/demo.xls"));
-		dataOperate.write(outputStream, null, option);
+		tableItem.setDataItems(dataItems);
+		tableItem.setName("工作簿1");
+		dataOperate.write(outputStream, tableItem);
 		outputStream.close();
 
 	}
 
 	@Test
-	public void imports() {
-		System.out.println("imp");
+	public void imports() throws Exception {
+		FileInputStream inputStream = new FileInputStream(new File("c:/demo.xlsx"));
+		Map<String, DataItem[]> items = dataOperate.read(inputStream);
+		inputStream.close();
+		System.out.println(JsonUtil.toJson(items));
+	}
+
+	// @Test
+	public void test1() throws Exception {
+		FileInputStream inputStream = new FileInputStream(new File("c:/demo/1.xlsx"));
+		Map<String, DataItem[]> items = dataOperate.read(inputStream);
+		inputStream.close();
+		System.out.println(JsonUtil.toJson(items));
+	}
+
+	// @Test
+	public void test2() throws Exception {
+		FileInputStream inputStream = new FileInputStream(new File("c:/demo/2.xlsx"));
+		Map<String, DataItem[]> items = dataOperate.read(inputStream);
+		inputStream.close();
+		System.out.println(JsonUtil.toJson(items));
+	}
+
+	// @Test
+	public void test3() throws Exception {
+		FileInputStream inputStream = new FileInputStream(new File("c:/demo/3.xlsx"));
+		Map<String, DataItem[]> items = dataOperate.read(inputStream);
+		inputStream.close();
+		System.out.println(JsonUtil.toJson(items));
+
+	}
+
+	// @Test
+	public void test4() throws Exception {
+		FileInputStream inputStream = new FileInputStream(new File("c:/demo/4.xlsx"));
+		Map<String, DataItem[]> items = dataOperate.read(inputStream);
+		inputStream.close();
+		System.out.println(JsonUtil.toJson(items));
 	}
 
 }

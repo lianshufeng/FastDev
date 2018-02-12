@@ -1,30 +1,30 @@
 package com.fast.dev.data.transfer.impl;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import com.fast.dev.data.transfer.DataOperate;
 import com.fast.dev.data.transfer.model.DataItem;
-import com.fast.dev.data.transfer.model.FieldInformation;
-import com.fast.dev.data.transfer.model.FileOption;
-
-import jxl.Workbook;
-import jxl.biff.EmptyCell;
-import jxl.format.Colour;
-import jxl.write.DateTime;
-import jxl.write.Label;
-import jxl.write.Number;
-import jxl.write.WritableCell;
-import jxl.write.WritableCellFormat;
-import jxl.write.WritableSheet;
-import jxl.write.WritableWorkbook;
-import jxl.write.WriteException;
-import jxl.write.biff.RowsExceededException;
+import com.fast.dev.data.transfer.model.TableItem;
 
 /**
  * excel的数据读取功能
@@ -36,60 +36,16 @@ import jxl.write.biff.RowsExceededException;
  */
 public class ExcelDataOperate extends DataOperate {
 
-	// 对应类型
-	private static final Map<Class<?>, Class<? extends WritableCell>> CellType = new HashMap<Class<?>, Class<? extends WritableCell>>() {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-
-		{
-			// 数字类型
-			put(int.class, Number.class);
-			put(Integer.class, Number.class);
-			put(Long.class, Number.class);
-			put(long.class, Number.class);
-			put(float.class, Number.class);
-			put(Float.class, Number.class);
-			put(double.class, Number.class);
-			put(Double.class, Number.class);
-
-			// 字符串
-			put(String.class, Label.class);
-			put(StringBuffer.class, Label.class);
-			put(StringBuilder.class, Label.class);
-
-			// 日期格式
-			put(Date.class, DateTime.class);
-
-			// 空类型
-			put(Void.class, EmptyCell.class);
-			put(null, EmptyCell.class);
-
-		}
-
-	};
-
-	/**
-	 * 通过覆写该功能获取指定的文件描述
-	 * 
-	 * @return
-	 */
-	public FileOption getFileOption(String version) {
-		return null;
-	}
-
 	@Override
-	public boolean write(OutputStream outputStream, List<DataItem> datas, FileOption option) {
+	public boolean write(OutputStream outputStream, TableItem... tableItems) {
 		try {
-			// 工作表格
-			WritableWorkbook workbook = makeWorkbook(outputStream);
+			Workbook workbook = new XSSFWorkbook();
 			// 生成工作簿
-			WritableSheet sheet = makeSheets(workbook, option);
-			// 写入数据
-			writeDataItems(sheet, datas);
-			// 推送流
-			pushStream(workbook);
+			for (int i = 0; i < tableItems.length; i++) {
+				makeSheet(workbook, tableItems[i]);
+			}
+			workbook.write(outputStream);
+			workbook.close();
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -97,119 +53,170 @@ public class ExcelDataOperate extends DataOperate {
 		return false;
 	}
 
-	@Override
-	public List<DataItem> read(InputStream inputStream) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	/**
-	 * 创建单元格
+	 * 生成工作簿
 	 * 
-	 * @param item
-	 * @return
+	 * @param workbook
+	 * @param tableItem
 	 */
-	private WritableCell makeCell(Object item, int c, int r) {
-		Class<?> cls = CellType.get(item.getClass());
-		if (cls == Number.class) {
-			return new Number(c, r, Double.parseDouble(String.valueOf(item)));
+	private void makeSheet(Workbook workbook, TableItem tableItem) {
+		// 创建工作簿
+		Sheet sheet = workbook.createSheet(tableItem.getName());
+		List<String> fields = tableItem.getFieldNames();
+		// 生成标题
+		Row headRow = sheet.createRow(0);
+		for (int i = 0; i < fields.size(); i++) {
+			String fieldName = fields.get(i);
+			Cell cell = headRow.createCell(i);
+			cell.setCellType(CellType.STRING);
+			cell.setCellValue(fieldName);
+			// 设置字体加粗
+			CellStyle cellStyle = workbook.createCellStyle();
+			// 设置背景颜色
+			cellStyle.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
+			cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			Font font = workbook.createFont();
+			cellStyle.setFont(font);
+			// 设置自动换行
+			cellStyle.setWrapText(true);
+			cell.setCellStyle(cellStyle);
+			// 设置单元格宽度
+			sheet.setColumnWidth(i, fieldName.length() * 1000);
 		}
-		if (cls == EmptyCell.class) {
-			return new EmptyCell(c, r);
-		}
-		if (cls == Label.class) {
-			return new Label(c, r, String.valueOf(item));
-		}
-		if (cls == DateTime.class) {
-			return new DateTime(c, r, (Date) item);
-		}
-		return new Label(c, r, String.valueOf(item));
-	}
-
-	/**
-	 * 写工作簿数据
-	 * 
-	 * @param writableSheet
-	 * @param datas
-	 * @throws WriteException
-	 * @throws RowsExceededException
-	 */
-	private void writeDataItems(WritableSheet writableSheet, List<DataItem> datas)
-			throws RowsExceededException, WriteException {
-		if (datas == null || datas.size() == 0) {
-			return;
-		}
-		// 判断是否含有标题
-		int indexOffSet = (writableSheet.getColumns() == 0) ? 0 : 1;
-		for (int i = 0; i < datas.size(); i++) {
-			DataItem dataItem = datas.get(i);
+		// 生成内容
+		List<DataItem> dataItems = tableItem.getDataItems();
+		for (int i = 0; i < dataItems.size(); i++) {
+			DataItem dataItem = dataItems.get(i);
+			Row row = sheet.createRow(i + 1);
 			for (int j = 0; j < dataItem.size(); j++) {
-				Object item = dataItem.get(j);
-				writableSheet.addCell(makeCell(item, j, i + indexOffSet));
+				Object o = dataItem.get(j);
+				Cell cell = row.createCell(j);
+				// 设置值
+				setCellValue(cell, o);
 			}
 		}
 	}
 
 	/**
-	 * 生成工作簿
+	 * 设置单元格值
 	 * 
-	 * @param writableWorkbook
-	 * @param option
-	 * @throws WriteException
+	 * @param cell
+	 * @param o
 	 */
-	private WritableSheet makeSheets(WritableWorkbook workbook, FileOption option) throws WriteException {
-		// 删除之前所有的空的工作簿
-		for (int i = 0; i < workbook.getSheetNames().length; i++) {
-			workbook.removeSheet(i);
+	private void setCellValue(Cell cell, Object o) {
+		if (o == null) {
+			return;
 		}
-		if (option == null) {
-			return workbook.createSheet("Sheet1", 0);
+		if (o instanceof String) {
+			cell.setCellType(CellType.STRING);
+			cell.setCellValue(String.valueOf(o));
+		} else if (o instanceof Number) {
+			cell.setCellType(CellType.NUMERIC);
+			cell.setCellValue(Double.parseDouble(String.valueOf(o)));
+		} else if (o instanceof Date) {
+			CellStyle cellStyle = cell.getSheet().getWorkbook().createCellStyle();
+			cellStyle.setDataFormat((short) 14);
+			cell.setCellStyle(cellStyle);
+			cell.setCellValue((Date) o);
+		} else if (o instanceof Boolean) {
+			cell.setCellValue((boolean) o);
+		} else {
+			cell.setCellValue(String.valueOf(o));
 		}
-
-		// 生成指定的版本号
-		WritableSheet sheet = workbook.createSheet(option.getVersion(), 0);
-		// 字段信息
-		List<FieldInformation> fieldInformations = option.getFields();
-		// 生成指定的数据格式
-		for (int i = 0; i < fieldInformations.size(); i++) {
-			FieldInformation info = fieldInformations.get(i);
-			// 设置字体加粗
-			// WritableFont font = new WritableFont(WritableFont.ARIAL, 10,
-			// WritableFont.BOLD);
-			// WritableCellFormat format = new WritableCellFormat(font);
-			WritableCellFormat format = new WritableCellFormat();
-			// 背景颜色
-			format.setBackground(Colour.GRAY_25);
-			// 设置自动换行
-			format.setWrap(true);
-			Label label = new Label(i, 0, info.getName(), format);
-			sheet.addCell(label);
-			// 设置单元格宽度
-			sheet.setColumnView(i, info.getName().length() * 4 + 10);
-		}
-		return sheet;
 	}
 
-	/**
-	 * 创建写出的表格
+	@Override
+	public Map<String, DataItem[]> read(InputStream inputStream) {
+		Map<String, DataItem[]> result = null;
+		try {
+			Workbook workbook = null;
+			try {
+				workbook = new XSSFWorkbook(inputStream);
+			} catch (Exception e) {
+				workbook = new HSSFWorkbook(inputStream);
+			}
+			try {
+				// 循环读取所有的工作簿
+				int sheetCount = workbook.getNumberOfSheets();
+				result = new HashMap<String, DataItem[]>();
+				for (int i = 0; i < sheetCount; i++) {
+					Sheet sheet = workbook.getSheetAt(i);
+					result.put(workbook.getSheetName(i), readSheet(sheet));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			// 关闭流
+			workbook.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	/*
+	 * 读取工作簿
 	 * 
-	 * @param outputStream
+	 * @param sheet
+	 * 
 	 * @return
-	 * @throws IOException
 	 */
-	private WritableWorkbook makeWorkbook(OutputStream outputStream) throws IOException {
-		return Workbook.createWorkbook(outputStream);
+	private DataItem[] readSheet(Sheet sheet) {
+		int start = sheet.getFirstRowNum();
+		List<DataItem> dataItems = new ArrayList<DataItem>();
+		for (int i = start; i <= sheet.getLastRowNum(); i++) {
+			DataItem dataItem = new DataItem();
+			Row row = sheet.getRow(i);
+			// 过滤空行
+			if (row == null) {
+				continue;
+			}
+			// 列数
+			int startCellNum = row.getFirstCellNum();
+			for (int j = startCellNum; j < row.getLastCellNum(); j++) {
+				dataItem.add(cellToObject(row.getCell(j)));
+			}
+			dataItems.add(dataItem);
+		}
+		return dataItems.toArray(new DataItem[dataItems.size()]);
+
 	}
 
 	/**
-	 * 推送流
+	 * cell类型转换为java对象
 	 * 
-	 * @throws IOException
-	 * @throws WriteException
+	 * @param cell
+	 * @return
 	 */
-	private void pushStream(WritableWorkbook workbook) throws IOException, WriteException {
-		workbook.write();
-		workbook.close();
+	private Object cellToObject(Cell cell) {
+		if (cell == null) {
+			return null;
+		}
+		Object o = null;
+		switch (cell.getCellTypeEnum()) {
+		case NUMERIC:
+			if (DateUtil.isCellDateFormatted(cell)) {
+				o = cell.getDateCellValue();
+			} else {
+				Double val = new Double(cell.getNumericCellValue());
+				// 兼容科学计数法
+				o = String.valueOf(val).indexOf("E") > -1 ? new BigDecimal(val) : val;
+			}
+			break;
+		case STRING:
+			o = cell.getStringCellValue();
+			break;
+		case BOOLEAN:
+			o = cell.getBooleanCellValue();
+			break;
+		case BLANK:
+			o = null;
+			break;
+		default:
+			o = cell.getStringCellValue();
+			break;
+		}
+		return o;
 	}
 
 }

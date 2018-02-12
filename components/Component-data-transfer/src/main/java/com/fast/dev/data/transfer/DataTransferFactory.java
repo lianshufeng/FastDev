@@ -1,5 +1,9 @@
 package com.fast.dev.data.transfer;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.fast.dev.data.transfer.impl.ExcelDataOperate;
 import com.fast.dev.data.transfer.type.DataFileType;
 
 /**
@@ -12,6 +16,18 @@ import com.fast.dev.data.transfer.type.DataFileType;
  */
 public abstract class DataTransferFactory {
 
+	// 缓存数据转换类型
+	private static final Map<DataFileType, Class<? extends DataOperate>> DataFileClasses = new HashMap<DataFileType, Class<? extends DataOperate>>() {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		{
+			put(DataFileType.Excel, ExcelDataOperate.class);
+		}
+	};
+
 	/**
 	 * 通过参数类型传递具体数据
 	 * 
@@ -19,10 +35,10 @@ public abstract class DataTransferFactory {
 	 */
 	public static DataOperate build(DataFileType dataFileType) {
 		try {
-			String className = DataTransferFactory.class.getPackage().getName() + ".impl." + dataFileType.toString()
-					+ "DataOperate";
-			Class<?> cls = Class.forName(className);
-			return (DataOperate) cls.newInstance();
+			Class<? extends DataOperate> cls = DataFileClasses.get(dataFileType);
+			if (cls != null) {
+				return cls.newInstance();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
