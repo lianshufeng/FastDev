@@ -1,7 +1,6 @@
 package com.fast.dev.component.mongodb.conf;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
@@ -101,7 +100,7 @@ public class MongodbConfiguration {
 		if (!StringUtils.isEmpty(userName)) {
 			MongoCredential mongoCredential = MongoCredential.createCredential(userName, dbName,
 					passWord.toCharArray());
-			mongoClient = new MongoClient(serverAddressList, Arrays.asList(mongoCredential), mongoClientOptions);
+			mongoClient = new MongoClient(serverAddressList, mongoCredential, mongoClientOptions);
 		} else {
 			mongoClient = new MongoClient(serverAddressList, mongoClientOptions);
 		}
