@@ -1,10 +1,7 @@
 package com.fast.dev.crawler.core;
 
-import com.fast.dev.crawler.model.ListCrawlerParameter;
-import com.fast.dev.crawler.model.ListCrawlerResult;
-
 /**
- * 接口抽象类
+ * 每页的取出列表
  * 
  * @作者 练书锋
  * @联系 251708339@qq.com
@@ -14,15 +11,11 @@ import com.fast.dev.crawler.model.ListCrawlerResult;
 public interface ListCrawler extends Crawler {
 
 	/**
-	 * 调度器表达式
 	 * 
-	 * @return
+	 * @param pageUrl
+	 *            每页的地址
+	 * @return 返回内容页的地址
 	 */
-	public abstract String corn();
-
-	/**
-	 * 返回集合结果集
-	 */
-	public abstract ListCrawlerResult call(ListCrawlerParameter parameter);
+	public String[] call(String pageUrl);
 
 }

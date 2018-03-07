@@ -20,7 +20,7 @@ import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.stereotype.Component;
 
-import com.fast.dev.crawler.core.ListCrawler;
+import com.fast.dev.crawler.core.Crawler;
 
 /**
  * 定时器
@@ -56,13 +56,13 @@ public class TimerManager {
 	 * @param listCrawler
 	 * @return
 	 */
-	public boolean add(final String taskName, final String cron, final ListCrawler listCrawler) {
-		Log.info("更新调度：" + taskName + "  [ " + cron + " ] [" + listCrawler + "]");
-		if (this.jobCache.containsKey(taskName)) {
-			remove(taskName);
+	public boolean add(final String schedulerName, final String cron, final Crawler crawler) {
+		Log.info("更新调度：" + schedulerName + "  [ " + cron + " ] [" + crawler + "]");
+		if (this.jobCache.containsKey(schedulerName)) {
+			remove(schedulerName);
 		}
 		JobDataMap jobData = new JobDataMap();
-		jobData.put("object", listCrawler);
+		jobData.put("object", crawler);
 		// 任务
 		JobDetail jb = JobBuilder.newJob(TimerTaskExecute.class).setJobData(jobData).build();
 		JobKey jobId = jb.getKey();
@@ -70,7 +70,7 @@ public class TimerManager {
 		Trigger t = TriggerBuilder.newTrigger().withSchedule(CronScheduleBuilder.cronSchedule(cron)).build();
 		try {
 			this.scheduler.scheduleJob(jb, t);
-			this.jobCache.put(taskName, jobId);
+			this.jobCache.put(schedulerName, jobId);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -83,9 +83,9 @@ public class TimerManager {
 	 * 
 	 * @param id
 	 */
-	public void remove(final String taskName) {
-		Log.debug("删除调度：" + taskName + "  [" + taskName + "]");
-		JobKey jobKey = this.jobCache.remove(taskName);
+	public void remove(final String schedulerName) {
+		Log.debug("删除调度：" + schedulerName + "  [" + schedulerName + "]");
+		JobKey jobKey = this.jobCache.remove(schedulerName);
 		if (jobKey != null) {
 			try {
 				this.scheduler.deleteJob(jobKey);

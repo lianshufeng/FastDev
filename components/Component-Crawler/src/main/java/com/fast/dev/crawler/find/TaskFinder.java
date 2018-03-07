@@ -19,9 +19,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.fast.dev.crawler.core.ContentCrawler;
 import com.fast.dev.crawler.core.Crawler;
-import com.fast.dev.crawler.core.ListCrawler;
 import com.fast.dev.crawler.timer.TimerManager;
 
 import groovy.lang.GroovyClassLoader;
@@ -131,10 +129,9 @@ public class TaskFinder {
 				Crawler crawler = this.crawlerCache.remove(delFile.getAbsolutePath());
 				if (crawler != null) {
 					Log.info("delete:" + delFile.getAbsolutePath());
-					if (crawler instanceof ListCrawler) {
-						// 删除调度器
-						this.timerManager.remove(((ListCrawler) crawler).name());
-					}
+					// 删除调度器
+					this.timerManager.remove(schedulerName(crawler));
+
 				}
 			}
 		}
@@ -153,27 +150,13 @@ public class TaskFinder {
 			GroovyClassLoader loader = new GroovyClassLoader();
 			Class<Crawler> groovyClass = loader.parseClass(file);
 			Crawler crawler = groovyClass.newInstance();
-			if (crawler instanceof ListCrawler) {
-				updateListCrawler((ListCrawler) crawler);
-			} else if (crawler instanceof ContentCrawler) {
-				updateContentCrawler((ContentCrawler) crawler);
-			}
 			if (crawler != null) {
+				updateCrawler(crawler);
 				this.crawlerCache.put(file.getAbsolutePath(), crawler);
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * 更新内容爬虫任务
-	 * 
-	 * @param contentCrawler
-	 */
-	private void updateContentCrawler(ContentCrawler contentCrawler) {
-
 	}
 
 	/**
@@ -182,13 +165,21 @@ public class TaskFinder {
 	 * @param file
 	 * @param listCrawler
 	 */
-	private void updateListCrawler(final ListCrawler listCrawler) {
+	private void updateCrawler(final Crawler crawler) {
 		// 调度器
-		String corn = listCrawler.corn();
-		// 任务名
-		String taskName = listCrawler.name();
+		String corn = crawler.corn();
 		// 增加到调度器里
-		this.timerManager.add(taskName, corn, listCrawler);
+		this.timerManager.add(schedulerName(crawler), corn, crawler);
+	}
+
+	/**
+	 * 构建调度器名称
+	 * 
+	 * @param crawler
+	 * @return
+	 */
+	private String schedulerName(final Crawler crawler) {
+		return crawler.taskName() + "_" + crawler.getClass().getName();
 	}
 
 }

@@ -1,7 +1,5 @@
 package com.fast.dev.crawler.model;
 
-import java.util.List;
-
 /**
  * 内容详细页面
  * 
@@ -15,55 +13,45 @@ public class ContentResult extends CrawlerResult {
 	// 标题
 	private String title;
 
-	// 需要访问详情的地址
-	private List<String> urls;
-
 	// 创建时间
-	private long createTime;
+	private long publishTime;
 
-	/**
-	 * @return the title
-	 */
+	// 需要访问详情的地址
+	private String[] urls;
+
 	public String getTitle() {
 		return title;
 	}
 
-	/**
-	 * @param title
-	 *            the title to set
-	 */
 	public void setTitle(String title) {
 		this.title = title;
 	}
 
-	/**
-	 * @return the urls
-	 */
-	public List<String> getUrls() {
+	public String[] getUrls() {
 		return urls;
 	}
 
-	/**
-	 * @param urls
-	 *            the urls to set
-	 */
-	public void setUrls(List<String> urls) {
+	public void setUrls(String[] urls) {
 		this.urls = urls;
 	}
 
-	/**
-	 * @return the createTime
-	 */
-	public long getCreateTime() {
-		return createTime;
+	public long getPublishTime() {
+		return publishTime;
 	}
 
-	/**
-	 * @param createTime
-	 *            the createTime to set
-	 */
-	public void setCreateTime(long createTime) {
-		this.createTime = createTime;
+	public void setPublishTime(long publishTime) {
+		this.publishTime = publishTime;
+	}
+
+	public ContentResult() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public ContentResult(String title, long publishTime, String... urls) {
+		super();
+		this.title = title;
+		this.publishTime = publishTime;
+		this.urls = urls;
 	}
 
 }

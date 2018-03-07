@@ -1,70 +1,58 @@
 package com.fast.dev.crawler.timer;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import com.fast.dev.crawler.CrawlerMain;
+import com.fast.dev.crawler.core.ContentCrawler;
+import com.fast.dev.crawler.core.Crawler;
 import com.fast.dev.crawler.core.ListCrawler;
-import com.fast.dev.crawler.dao.CrawlerTaskDao;
-import com.fast.dev.crawler.domain.TimerListTask;
-import com.fast.dev.crawler.model.ListCrawlerParameter;
-import com.fast.dev.crawler.model.ListCrawlerResult;
-import com.fast.dev.crawler.model.ListNextPageAndUrlsResult;
-import com.fast.dev.crawler.model.ListUrlsResult;
+import com.fast.dev.crawler.core.PageCrawler;
+import com.fast.dev.crawler.dao.ContentUrlsDao;
+import com.fast.dev.crawler.dao.PageUrlsDao;
+import com.fast.dev.crawler.dao.ResourcesDao;
+import com.fast.dev.crawler.dao.TaskRecordDao;
+import com.fast.dev.crawler.domain.ContentUrls;
+import com.fast.dev.crawler.domain.PageUrls;
+import com.fast.dev.crawler.model.ContentResult;
 
 public class TimerTaskExecute implements Job {
-
-	private CrawlerTaskDao taskDao;
+	private static final Logger Log = Logger.getLogger(TimerTaskExecute.class);
+	private PageUrlsDao pageUrlsDao;
+	private TaskRecordDao taskRecordDao;
+	private ContentUrlsDao contentUrlsDao;
+	private ResourcesDao resourcesDao;
 
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		JobDataMap jobDataMap = arg0.getMergedJobDataMap();
-		ListCrawler listCrawler = (ListCrawler) jobDataMap.get("object");
-		call(listCrawler);
+		Crawler crawler = (Crawler) jobDataMap.get("object");
+		call(crawler);
 	}
 
 	/**
 	 * 初始化数据库
 	 */
 	private void initDB() {
-		if (this.taskDao == null) {
-			this.taskDao = CrawlerMain.applicationContext.getBean(CrawlerTaskDao.class);
+		if (this.pageUrlsDao == null) {
+			this.pageUrlsDao = CrawlerMain.applicationContext.getBean(PageUrlsDao.class);
 		}
-	}
-
-	/**
-	 * 处理结果集
-	 * 
-	 * @param result
-	 */
-	private void listUrlsResult(ListCrawler listCrawler, ListUrlsResult result) {
-
-	}
-
-	/**
-	 * 处理结果集
-	 * 
-	 * @param taskName
-	 * @param result
-	 */
-	private void listNextPageAndUrlsResult(final ListCrawler listCrawler, ListNextPageAndUrlsResult result) {
-		this.taskDao.updateTimerTask(listCrawler.name(), result.getEndInfo(), result.getNextPage());
-		// 未执行完成，有下一页
-		if (result.getNextPage() != null) {
-			Timer timer = new Timer();
-			timer.schedule(new TimerTask() {
-				@Override
-				public void run() {
-					call(listCrawler);
-				}
-			}, result.getNextPageSleepTime());
+		if (this.taskRecordDao == null) {
+			this.taskRecordDao = CrawlerMain.applicationContext.getBean(TaskRecordDao.class);
 		}
-
+		if (this.contentUrlsDao == null) {
+			this.contentUrlsDao = CrawlerMain.applicationContext.getBean(ContentUrlsDao.class);
+		}
+		if (this.resourcesDao == null) {
+			this.resourcesDao = CrawlerMain.applicationContext.getBean(ResourcesDao.class);
+		}
 	}
 
 	/**
@@ -72,34 +60,81 @@ public class TimerTaskExecute implements Job {
 	 * 
 	 * @param listCrawler
 	 */
-	private void call(ListCrawler listCrawler) {
+	private void call(Crawler crawler) {
 		initDB();
-		String taskName = listCrawler.name();
-		// 取调用参数
-		ListCrawlerParameter listCrawlerParameter = getListCrawlerParameter(taskName);
-		// 调用接口
-		ListCrawlerResult result = listCrawler.call(listCrawlerParameter);
-		if (result == null) {
-			return;
-		}
-		if (result instanceof ListNextPageAndUrlsResult) {
-			listNextPageAndUrlsResult(listCrawler, (ListNextPageAndUrlsResult) result);
-		} else if (result instanceof ListUrlsResult) {
-			listUrlsResult(listCrawler, (ListUrlsResult) result);
+		if (crawler instanceof PageCrawler) {
+			callPageCrawler((PageCrawler) crawler);
+		} else if (crawler instanceof ContentCrawler) {
+			callContentCrawler((ContentCrawler) crawler);
+		} else if (crawler instanceof ListCrawler) {
+			callListCrawler((ListCrawler) crawler);
 		}
 	}
 
 	/**
-	 * 获取调用者参数
+	 * 保存页面地址
 	 * 
-	 * @param taskName
-	 * @return
+	 * @param crawler
 	 */
-	private ListCrawlerParameter getListCrawlerParameter(String taskName) {
-		// 取出参数
-		TimerListTask timerListTask = this.taskDao.findAndRemoveTimerTask(taskName);
-		return timerListTask == null ? new ListCrawlerParameter()
-				: new ListCrawlerParameter(timerListTask.getEndInfo(), timerListTask.getNextPage());
+	private void callPageCrawler(PageCrawler crawler) {
+		String taskName = crawler.taskName();
+		String[] pageUrls = crawler.pageUrls();
+		if (this.taskRecordDao.exists(taskName)) {
+			// 如果已经执行过则只保留几条记录
+			pageUrls = ArrayUtils.subarray(pageUrls, 0, crawler.repeatPageCount());
+		}
+		Log.info(String.format(" [%s] 加入页数 : [%s] ", taskName, pageUrls.length));
+		for (String url : pageUrls) {
+			this.pageUrlsDao.update(taskName, url);
+		}
 	}
+
+	/**
+	 * 传递page页过去，返回content的list
+	 * 
+	 * @param crawler
+	 */
+	private void callListCrawler(ListCrawler crawler) {
+		String taskName = crawler.taskName();
+		PageUrls pageUrls = this.pageUrlsDao.findAndRemove(taskName);
+		if (pageUrls != null) {
+			String pageUrl = pageUrls.getUrl();
+			String[] contentUrls = crawler.call(pageUrl);
+			if (contentUrls != null && contentUrls.length > 0) {
+				for (String url : contentUrls) {
+					this.contentUrlsDao.update(taskName, url);
+				}
+				Log.info(String.format("获取 [%s] 列表 , 数量 : %s", pageUrl, contentUrls.length));
+			}
+		}
+	}
+	
+	
+	private final static SimpleDateFormat DateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+
+	/**
+	 * 获取内容爬虫
+	 * 
+	 * @param crawler
+	 */
+	private void callContentCrawler(ContentCrawler crawler) {
+		String taskName = crawler.taskName();
+		ContentUrls contentUrls = this.contentUrlsDao.findAndRemove(taskName);
+		if (contentUrls != null) {
+			String url = contentUrls.getUrl();
+			ContentResult contentResult = crawler.call(url);
+			if (contentResult != null) {
+				String[] urls = contentResult.getUrls();
+				if (urls != null && urls.length > 0) {
+					for (String resUrl : urls) {
+						this.resourcesDao.update(contentResult.getTitle(), resUrl, contentResult.getPublishTime());
+						Log.info(String.format("标题 : [%s] , 地址 : [%s] , 时间 : [%s]", contentResult.getTitle(), resUrl,
+								DateFormat.format(new Date(contentResult.getPublishTime()))));
+					}
+				}
+			}
+		}
+	}
+	
 
 }

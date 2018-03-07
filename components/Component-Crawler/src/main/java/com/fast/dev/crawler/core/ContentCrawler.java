@@ -1,10 +1,9 @@
 package com.fast.dev.crawler.core;
 
 import com.fast.dev.crawler.model.ContentResult;
-import com.fast.dev.crawler.model.CrawlerParameter;
 
 /**
- * 内容爬虫
+ * 内容的详情
  * 
  * @作者 练书锋
  * @联系 251708339@qq.com
@@ -14,8 +13,11 @@ import com.fast.dev.crawler.model.CrawlerParameter;
 public interface ContentCrawler extends Crawler {
 
 	/**
-	 * 调用内容爬虫
+	 * 调用爬虫获取标题与连接
+	 * 
+	 * @param url
+	 * @return
 	 */
-	public abstract ContentResult call(CrawlerParameter parameter);
+	public abstract ContentResult call(String url);
 
 }
