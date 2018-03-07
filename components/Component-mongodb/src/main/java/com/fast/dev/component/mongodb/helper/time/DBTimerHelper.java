@@ -1,7 +1,6 @@
 package com.fast.dev.component.mongodb.helper.time;
 
 import javax.annotation.PreDestroy;
-import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
@@ -11,7 +10,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
-import com.fast.dev.core.task.impl.single.SingleTaskManager;
+import com.fast.dev.component.mongodb.conf.SingleTaskManagerExt;
 
 @Component
 public class DBTimerHelper {
@@ -20,8 +19,8 @@ public class DBTimerHelper {
 	private MongoTemplate mongoTemplate;
 
 	// 单任务管理器
-	@Resource(name = "dBTimerHelperTaskManager")
-	private SingleTaskManager taskManager;
+	@Autowired
+	private SingleTaskManagerExt taskManager;
 
 	// DB的时间偏移
 	private Long dBOffSetTime = null;

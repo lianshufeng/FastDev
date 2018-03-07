@@ -3,8 +3,7 @@ package com.fast.dev.component.mongodb.helper.update;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Resource;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -30,10 +29,10 @@ public class DataUpdateHelper {
 	private final static String CreateTimeName = "createTime";
 	private final static String UpdateTimeName = "updateTime";
 
-	@Resource
+	@Autowired
 	private MongoTemplate mongoTemplate;
 
-	@Resource
+	@Autowired
 	private DBTimerHelper dbTimerHelper;
 
 	/**
