@@ -1,0 +1,99 @@
+package com.fast.dev.crawler.timer;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
+import org.apache.log4j.Logger;
+import org.quartz.CronScheduleBuilder;
+import org.quartz.JobBuilder;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SchedulerFactory;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
+import org.quartz.impl.StdSchedulerFactory;
+import org.springframework.stereotype.Component;
+
+import com.fast.dev.crawler.core.ListCrawler;
+
+/**
+ * 定时器
+ * 
+ * @作者 练书锋
+ * @联系 251708339@qq.com
+ * @时间 2018年3月7日
+ *
+ */
+@Component
+public class TimerManager {
+	private static final Logger Log = Logger.getLogger(TimerManager.class);
+	private Scheduler scheduler;
+	private Map<String, JobKey> jobCache = new ConcurrentHashMap<>();
+
+	@PreDestroy
+	private void shutdown() throws Exception {
+		this.scheduler.shutdown(true);
+	}
+
+	@PostConstruct
+	private void init() throws Exception {
+		SchedulerFactory sf = new StdSchedulerFactory();
+		this.scheduler = sf.getScheduler();
+		scheduler.start();
+	}
+
+	/**
+	 * 添加调度器任务
+	 * 
+	 * @param taskName
+	 * @param cron
+	 * @param listCrawler
+	 * @return
+	 */
+	public boolean add(final String taskName, final String cron, final ListCrawler listCrawler) {
+		Log.info("更新调度：" + taskName + "  [ " + cron + " ] [" + listCrawler + "]");
+		if (this.jobCache.containsKey(taskName)) {
+			remove(taskName);
+		}
+		JobDataMap jobData = new JobDataMap();
+		jobData.put("object", listCrawler);
+		// 任务
+		JobDetail jb = JobBuilder.newJob(TimerTaskExecute.class).setJobData(jobData).build();
+		JobKey jobId = jb.getKey();
+		// 触发器
+		Trigger t = TriggerBuilder.newTrigger().withSchedule(CronScheduleBuilder.cronSchedule(cron)).build();
+		try {
+			this.scheduler.scheduleJob(jb, t);
+			this.jobCache.put(taskName, jobId);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	/**
+	 * 删除任务
+	 * 
+	 * @param id
+	 */
+	public void remove(final String taskName) {
+		Log.debug("删除调度：" + taskName + "  [" + taskName + "]");
+		JobKey jobKey = this.jobCache.remove(taskName);
+		if (jobKey != null) {
+			try {
+				this.scheduler.deleteJob(jobKey);
+			} catch (SchedulerException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+}
