@@ -53,6 +53,9 @@ public class TaskFinder {
 
 	private void find() {
 		File directory = new File(rootPath);
+		if (!directory.exists()) {
+			directory.mkdirs();
+		}
 		if (!directory.isDirectory()) {
 			return;
 		}
