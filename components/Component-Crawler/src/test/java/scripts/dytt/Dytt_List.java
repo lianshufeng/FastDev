@@ -1,4 +1,4 @@
-package dytt;
+package scripts.dytt;
 
 import java.util.ArrayList;
 import java.util.List;

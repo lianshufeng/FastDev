@@ -3,7 +3,6 @@ package com.fast.dev.crawler.timer;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.apache.log4j.Logger;
@@ -18,6 +17,7 @@ import org.quartz.SchedulerFactory;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.fast.dev.crawler.core.Crawler;
@@ -41,7 +41,7 @@ public class TimerManager {
 		this.scheduler.shutdown(true);
 	}
 
-	@PostConstruct
+	@Autowired
 	private void init() throws Exception {
 		SchedulerFactory sf = new StdSchedulerFactory();
 		this.scheduler = sf.getScheduler();

@@ -19,6 +19,7 @@ public class CrawlerMain {
 		MongodbConfig mongodbConfig = loadDBConfig();
 		ConfigurableListableBeanFactory beanFactory = applicationContext.getBeanFactory();
 		beanFactory.registerSingleton("mongodbConfig", mongodbConfig);
+
 		applicationContext.scan("com.fast.dev");
 		applicationContext.refresh();
 		Log.info("Start ...");

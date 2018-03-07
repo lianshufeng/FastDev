@@ -9,7 +9,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.apache.commons.io.FileUtils;
@@ -42,7 +41,7 @@ public class TaskFinder {
 		this.timer.cancel();
 	}
 
-	@PostConstruct
+	@Autowired
 	private void init() {
 		this.timer.schedule(new TimerTask() {
 			@Override
