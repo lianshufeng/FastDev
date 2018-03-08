@@ -2,8 +2,8 @@ package com.fast.dev.crawler.timer;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
@@ -22,6 +22,7 @@ import com.fast.dev.crawler.dao.TaskRecordDao;
 import com.fast.dev.crawler.domain.ContentUrls;
 import com.fast.dev.crawler.domain.PageUrls;
 import com.fast.dev.crawler.model.ContentResult;
+import com.fast.dev.crawler.model.UrlJob;
 
 public class TimerTaskExecute implements Job {
 	private static final Logger Log = Logger.getLogger(TimerTaskExecute.class);
@@ -78,14 +79,14 @@ public class TimerTaskExecute implements Job {
 	 */
 	private void callPageCrawler(PageCrawler crawler) {
 		String taskName = crawler.taskName();
-		String[] pageUrls = crawler.pageUrls();
+		UrlJob[] sourcesUrls = crawler.pageUrls();
 		if (this.taskRecordDao.exists(taskName)) {
 			// 如果已经执行过则只保留几条记录
-			pageUrls = ArrayUtils.subarray(pageUrls, 0, crawler.repeatPageCount());
+			sourcesUrls = crawler.repeat(sourcesUrls);
 		}
-		Log.info(String.format(" [%s] 加入页数 : [%s] ", taskName, pageUrls.length));
-		for (String url : pageUrls) {
-			this.pageUrlsDao.update(taskName, url);
+		Log.info(String.format(" [%s] 加入页数 : [%s] ", taskName, sourcesUrls.length));
+		for (UrlJob job : sourcesUrls) {
+			this.pageUrlsDao.update(taskName, job.getUrl(), job.getData());
 		}
 	}
 
@@ -99,17 +100,17 @@ public class TimerTaskExecute implements Job {
 		PageUrls pageUrls = this.pageUrlsDao.findAndRemove(taskName);
 		if (pageUrls != null) {
 			String pageUrl = pageUrls.getUrl();
-			String[] contentUrls = crawler.call(pageUrl);
+			Map<String, Object> data = pageUrls.getData();
+			UrlJob[] contentUrls = crawler.call(pageUrl, data);
 			if (contentUrls != null && contentUrls.length > 0) {
-				for (String url : contentUrls) {
-					this.contentUrlsDao.update(taskName, url);
+				for (UrlJob job : contentUrls) {
+					this.contentUrlsDao.update(taskName, job.getUrl(), job.getData());
 				}
 				Log.info(String.format("获取 [%s] 列表 , 数量 : %s", pageUrl, contentUrls.length));
 			}
 		}
 	}
-	
-	
+
 	private final static SimpleDateFormat DateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 
 	/**
@@ -122,7 +123,8 @@ public class TimerTaskExecute implements Job {
 		ContentUrls contentUrls = this.contentUrlsDao.findAndRemove(taskName);
 		if (contentUrls != null) {
 			String url = contentUrls.getUrl();
-			ContentResult contentResult = crawler.call(url);
+			Map<String, Object> data = contentUrls.getData();
+			ContentResult contentResult = crawler.call(url, data);
 			if (contentResult != null) {
 				String[] urls = contentResult.getUrls();
 				if (urls != null && urls.length > 0) {
@@ -135,6 +137,5 @@ public class TimerTaskExecute implements Job {
 			}
 		}
 	}
-	
 
 }

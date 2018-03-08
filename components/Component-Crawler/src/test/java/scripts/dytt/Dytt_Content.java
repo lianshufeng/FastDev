@@ -1,6 +1,7 @@
 package scripts.dytt;
 
 import java.text.SimpleDateFormat;
+import java.util.Map;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -22,16 +23,16 @@ public class Dytt_Content implements ContentCrawler {
 	}
 
 	@Override
-	public ContentResult call(String url) {
+	public ContentResult call(String url, Map<String, Object> data) {
 		try {
 			System.out.println("获取详细：" + url);
 			Document document = Jsoup.connect(url).timeout(10000).get();
 			String title = document.getElementsByClass("title_all").get(4).text();
 			Element content = document.getElementsByClass("co_content8").first();
 			String downUrl = content.getElementsByTag("a").first().attr("href");
-			String timeStr = content.getElementsByTag("ul").text().split(" ")[0].split("：")[1];
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			long publishTime = dateFormat.parse(timeStr).getTime();
+			String publishTimeStr = String.valueOf(data.get("publishTime"));
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			long publishTime = dateFormat.parse(publishTimeStr).getTime();
 			return new ContentResult(title, publishTime, downUrl);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -39,6 +40,5 @@ public class Dytt_Content implements ContentCrawler {
 		return null;
 
 	}
-
 
 }

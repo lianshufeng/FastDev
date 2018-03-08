@@ -1,5 +1,7 @@
 package com.fast.dev.crawler.core;
 
+import com.fast.dev.crawler.model.UrlJob;
+
 /**
  * 页面爬虫
  * 
@@ -15,13 +17,13 @@ public interface PageCrawler extends Crawler {
 	 * 
 	 * @return
 	 */
-	public abstract String[] pageUrls();
+	public abstract UrlJob[] pageUrls();
 
 	/**
 	 * 重复的页面数量
 	 * 
 	 * @return
 	 */
-	public abstract int repeatPageCount();
+	public abstract UrlJob[] repeat(UrlJob[] sources);
 
 }
