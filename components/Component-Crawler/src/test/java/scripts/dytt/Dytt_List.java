@@ -26,7 +26,7 @@ public class Dytt_List implements ListCrawler {
 	}
 
 	@Override
-	public UrlJob[] call(String pageUrl, Map<String, Object> data) {
+	public List<UrlJob> call(String pageUrl, Map<String, Object> data) {
 		try {
 			System.out.println("获取列表：" + pageUrl);
 			List<UrlJob> urls = new ArrayList<>();
@@ -51,7 +51,7 @@ public class Dytt_List implements ListCrawler {
 				};
 				urls.add(new UrlJob(url, m));
 			}
-			return urls.toArray(new UrlJob[0]);
+			return urls;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

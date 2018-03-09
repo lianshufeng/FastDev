@@ -1,5 +1,7 @@
 package com.fast.dev.crawler.core;
 
+import java.util.List;
+
 import com.fast.dev.crawler.model.UrlJob;
 
 /**
@@ -17,13 +19,13 @@ public interface PageCrawler extends Crawler {
 	 * 
 	 * @return
 	 */
-	public abstract UrlJob[] pageUrls();
+	public abstract List<UrlJob> pageUrls();
 
 	/**
 	 * 重复的页面数量
 	 * 
 	 * @return
 	 */
-	public abstract UrlJob[] repeat(UrlJob[] sources);
+	public abstract List<UrlJob> repeat(List<UrlJob> sources);
 
 }

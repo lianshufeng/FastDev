@@ -1,6 +1,8 @@
 package scripts.dytt;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.jsoup.Jsoup;
@@ -23,7 +25,7 @@ public class Dytt_Content implements ContentCrawler {
 	}
 
 	@Override
-	public ContentResult call(String url, Map<String, Object> data) {
+	public List<ContentResult> call(String url, Map<String, Object> data) {
 		try {
 			System.out.println("获取详细：" + url);
 			Document document = Jsoup.connect(url).timeout(10000).get();
@@ -33,7 +35,9 @@ public class Dytt_Content implements ContentCrawler {
 			String publishTimeStr = String.valueOf(data.get("publishTime"));
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			long publishTime = dateFormat.parse(publishTimeStr).getTime();
-			return new ContentResult(title, publishTime, downUrl);
+			List<ContentResult> list = new ArrayList<>();
+			list.add(new ContentResult(title, downUrl, publishTime));
+			return list;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

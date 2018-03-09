@@ -1,5 +1,6 @@
 package com.fast.dev.crawler.core;
 
+import java.util.List;
 import java.util.Map;
 
 import com.fast.dev.crawler.model.UrlJob;
@@ -20,6 +21,6 @@ public interface ListCrawler extends Crawler {
 	 *            每页的地址
 	 * @return 返回内容页的地址
 	 */
-	public UrlJob[] call(String url, Map<String, Object> data);
+	public List<UrlJob> call(String url, Map<String, Object> data);
 
 }

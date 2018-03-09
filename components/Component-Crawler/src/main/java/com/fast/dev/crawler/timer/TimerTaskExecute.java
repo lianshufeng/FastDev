@@ -2,6 +2,7 @@ package com.fast.dev.crawler.timer;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -79,12 +80,12 @@ public class TimerTaskExecute implements Job {
 	 */
 	private void callPageCrawler(PageCrawler crawler) {
 		String taskName = crawler.taskName();
-		UrlJob[] sourcesUrls = crawler.pageUrls();
+		List<UrlJob> sourcesUrls = crawler.pageUrls();
 		if (this.taskRecordDao.exists(taskName)) {
 			// 如果已经执行过则只保留几条记录
 			sourcesUrls = crawler.repeat(sourcesUrls);
 		}
-		Log.info(String.format(" [%s] 加入页数 : [%s] ", taskName, sourcesUrls.length));
+		Log.info(String.format(" [%s] 加入页数 : [%s] ", taskName, sourcesUrls.size()));
 		for (UrlJob job : sourcesUrls) {
 			this.pageUrlsDao.update(taskName, job.getUrl(), job.getData());
 		}
@@ -101,12 +102,12 @@ public class TimerTaskExecute implements Job {
 		if (pageUrls != null) {
 			String pageUrl = pageUrls.getUrl();
 			Map<String, Object> data = pageUrls.getData();
-			UrlJob[] contentUrls = crawler.call(pageUrl, data);
-			if (contentUrls != null && contentUrls.length > 0) {
+			List<UrlJob> contentUrls = crawler.call(pageUrl, data);
+			if (contentUrls != null && contentUrls.size() > 0) {
 				for (UrlJob job : contentUrls) {
 					this.contentUrlsDao.update(taskName, job.getUrl(), job.getData());
 				}
-				Log.info(String.format("获取 [%s] 列表 , 数量 : %s", pageUrl, contentUrls.length));
+				Log.info(String.format("获取 [%s] 列表 , 数量 : %s", pageUrl, contentUrls.size()));
 			}
 		}
 	}
@@ -124,15 +125,13 @@ public class TimerTaskExecute implements Job {
 		if (contentUrls != null) {
 			String url = contentUrls.getUrl();
 			Map<String, Object> data = contentUrls.getData();
-			ContentResult contentResult = crawler.call(url, data);
-			if (contentResult != null) {
-				String[] urls = contentResult.getUrls();
-				if (urls != null && urls.length > 0) {
-					for (String resUrl : urls) {
-						this.resourcesDao.update(contentResult.getTitle(), resUrl, contentResult.getPublishTime());
-						Log.info(String.format("标题 : [%s] , 地址 : [%s] , 时间 : [%s]", contentResult.getTitle(), resUrl,
-								DateFormat.format(new Date(contentResult.getPublishTime()))));
-					}
+			List<ContentResult> contentResults = crawler.call(url, data);
+			if (contentResults != null) {
+				for (ContentResult result : contentResults) {
+					this.resourcesDao.update(result.getTitle(), result.getUrl(), result.getPublishTime());
+					Log.info(String.format("标题 : [%s] , 地址 : [%s] , 时间 : [%s]", result.getTitle(), result.getUrl(),
+							DateFormat.format(new Date(result.getPublishTime()))));
+
 				}
 			}
 		}

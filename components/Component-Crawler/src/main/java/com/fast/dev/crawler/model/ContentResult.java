@@ -13,11 +13,11 @@ public class ContentResult extends CrawlerResult {
 	// 标题
 	private String title;
 
+	// 需要访问详情的地址
+	private String url;
+
 	// 创建时间
 	private long publishTime;
-
-	// 需要访问详情的地址
-	private String[] urls;
 
 	public String getTitle() {
 		return title;
@@ -27,31 +27,45 @@ public class ContentResult extends CrawlerResult {
 		this.title = title;
 	}
 
-	public String[] getUrls() {
-		return urls;
-	}
-
-	public void setUrls(String[] urls) {
-		this.urls = urls;
-	}
-
+	/**
+	 * @return the publishTime
+	 */
 	public long getPublishTime() {
 		return publishTime;
 	}
 
+	/**
+	 * @param publishTime
+	 *            the publishTime to set
+	 */
 	public void setPublishTime(long publishTime) {
+		this.publishTime = publishTime;
+	}
+
+	/**
+	 * @return the url
+	 */
+	public String getUrl() {
+		return url;
+	}
+
+	/**
+	 * @param url
+	 *            the url to set
+	 */
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public ContentResult(String title, String url, long publishTime) {
+		super();
+		this.title = title;
+		this.url = url;
 		this.publishTime = publishTime;
 	}
 
 	public ContentResult() {
 		// TODO Auto-generated constructor stub
-	}
-
-	public ContentResult(String title, long publishTime, String... urls) {
-		super();
-		this.title = title;
-		this.publishTime = publishTime;
-		this.urls = urls;
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.fast.dev.crawler.core;
 
+import java.util.List;
 import java.util.Map;
 
 import com.fast.dev.crawler.model.ContentResult;
@@ -20,6 +21,6 @@ public interface ContentCrawler extends Crawler {
 	 * @param url
 	 * @return
 	 */
-	public abstract ContentResult call(String url, Map<String, Object> data);
+	public abstract List<ContentResult> call(String url, Map<String, Object> data);
 
 }
