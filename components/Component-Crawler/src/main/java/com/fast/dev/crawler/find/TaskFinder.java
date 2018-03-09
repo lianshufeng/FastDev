@@ -127,12 +127,13 @@ public class TaskFinder {
 		}
 		if (deleteDFiles.size() > 0) {
 			for (File delFile : deleteDFiles) {
+				String filePath = delFile.getAbsolutePath();
 				// 删除缓存对象
-				Crawler crawler = this.crawlerCache.remove(delFile.getAbsolutePath());
+				Crawler crawler = this.crawlerCache.remove(filePath);
 				if (crawler != null) {
-					Log.info("delete:" + delFile.getAbsolutePath());
+					Log.info("delete:" + filePath);
 					// 删除调度器
-					this.timerManager.remove(schedulerName(crawler));
+					this.timerManager.remove(filePath);
 
 				}
 			}
@@ -153,8 +154,7 @@ public class TaskFinder {
 			Class<Crawler> groovyClass = loader.parseClass(file);
 			Crawler crawler = groovyClass.newInstance();
 			if (crawler != null) {
-				updateCrawler(crawler);
-				this.crawlerCache.put(file.getAbsolutePath(), crawler);
+				updateCrawler(file, crawler);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -167,21 +167,13 @@ public class TaskFinder {
 	 * @param file
 	 * @param listCrawler
 	 */
-	private void updateCrawler(final Crawler crawler) {
+	private void updateCrawler(final File file, final Crawler crawler) {
+		String filePath = file.getAbsolutePath();
 		// 调度器
 		String corn = crawler.corn();
 		// 增加到调度器里
-		this.timerManager.add(schedulerName(crawler), corn, crawler);
-	}
-
-	/**
-	 * 构建调度器名称
-	 * 
-	 * @param crawler
-	 * @return
-	 */
-	private String schedulerName(final Crawler crawler) {
-		return crawler.taskName() + "_" + crawler.getClass().getName();
+		this.timerManager.add(filePath, corn, crawler);
+		this.crawlerCache.put(filePath, crawler);
 	}
 
 }
