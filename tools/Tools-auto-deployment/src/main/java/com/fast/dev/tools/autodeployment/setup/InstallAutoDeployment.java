@@ -98,6 +98,11 @@ public class InstallAutoDeployment {
 		// 项目名称
 		File[] projectNames = readProjects();
 		for (File f : projectNames) {
+			// 如果该项目打开状态则推出后
+			boolean isClose = !new File(f.getAbsolutePath() + "/org.eclipse.jdt.core/state.dat").exists();
+			if (!isClose) {
+				continue;
+			}
 			File locationFile = new File(f.getAbsolutePath() + "/.location");
 			String location = null;
 			if (locationFile.exists()) {
