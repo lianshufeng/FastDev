@@ -1,6 +1,5 @@
 package com.fast.dev.es.dao;
 
-import java.io.Serializable;
 import java.util.Map;
 
 public interface ESDao {
@@ -13,7 +12,7 @@ public interface ESDao {
 	 * @param source
 	 * @return
 	 */
-	public Boolean update(String id, Serializable source);
+	public Boolean update(String id, Object source);
 
 	/**
 	 * 批量更新
@@ -21,7 +20,7 @@ public interface ESDao {
 	 * @param sources
 	 * @return 如果value有值则为具体失败的原因
 	 */
-	public Map<String, String> update(Map<String, Serializable> sources);
+	public Map<String, String> update(Map<String, Object> sources);
 
 	/**
 	 * 保存文档
@@ -30,7 +29,7 @@ public interface ESDao {
 	 * @param sources
 	 * @return
 	 */
-	public boolean save(String id, Serializable source);
+	public boolean save(String id, Object source);
 
 	/**
 	 * 修改并保存对象
@@ -38,7 +37,7 @@ public interface ESDao {
 	 * @param source
 	 * @return
 	 */
-	public String[] save(Serializable... sources);
+	public Map<String, String> save(Object... sources);
 
 	/**
 	 * 获取文档对象
@@ -46,13 +45,17 @@ public interface ESDao {
 	 * @param id
 	 * @return
 	 */
-	public Map<String, ?>[] get(String... id);
+	public Map<String, Object> get(String... ids);
 
 	/**
 	 * 删除文档对象
 	 * 
 	 * @param id
 	 */
-	public void remove(String... id);
+	public Map<String, String> remove(String... ids);
+	
+	
+	public void list() ;
+	
 
 }

@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.client.Client;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 
 import com.fast.dev.es.conf.ESConfig;
 import com.fast.dev.es.factory.ESFactory;
@@ -17,6 +18,7 @@ import com.fast.dev.es.helper.ESHelper;
  * @时间 2018年3月14日
  *
  */
+@ComponentScan(basePackages = "com.fast.dev.es")
 public abstract class ElasticSearchConfiguration {
 
 	static Log log = LogFactory.getLog(ElasticSearchConfiguration.class);

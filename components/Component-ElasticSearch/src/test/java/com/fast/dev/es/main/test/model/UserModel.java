@@ -1,8 +1,8 @@
-package com.fast.dev.es.test;
+package com.fast.dev.es.main.test.model;
 
 import java.io.Serializable;
 
-public class TestUserDemo implements Serializable {
+public class UserModel implements Serializable {
 
 	/**
 	 * 
@@ -57,14 +57,14 @@ public class TestUserDemo implements Serializable {
 		this.sex = sex;
 	}
 
-	public TestUserDemo(String id, String name, int sex) {
+	public UserModel(String id, String name, int sex) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.sex = sex;
 	}
 
-	public TestUserDemo() {
+	public UserModel() {
 		// TODO Auto-generated constructor stub
 	}
 

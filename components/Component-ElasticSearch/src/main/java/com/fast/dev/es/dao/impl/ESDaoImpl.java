@@ -1,9 +1,6 @@
 package com.fast.dev.es.dao.impl;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -11,17 +8,23 @@ import javax.annotation.PreDestroy;
 
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
-import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.get.MultiGetItemResponse;
+import org.elasticsearch.action.get.MultiGetRequestBuilder;
+import org.elasticsearch.action.get.MultiGetResponse;
 import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.action.update.UpdateRequestBuilder;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.unit.TimeValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.fast.dev.es.dao.ESDao;
+import com.fast.dev.es.query.Sort;
 import com.fast.dev.es.util.ObjectUtil;
 
 /**
@@ -64,7 +67,7 @@ public class ESDaoImpl implements ESDao {
 	}
 
 	@Override
-	public boolean save(String id, Serializable source) {
+	public boolean save(String id, Object source) {
 		if (StringUtils.isEmpty(id) || source == null) {
 			return false;
 		}
@@ -73,42 +76,44 @@ public class ESDaoImpl implements ESDao {
 	}
 
 	@Override
-	public String[] save(Serializable... sources) {
+	public Map<String, String> save(Object... sources) {
 		if (sources == null) {
 			return null;
 		}
-		// 用于接收插入的数据id
-		List<String> result = new ArrayList<>();
 		BulkRequestBuilder bulkRequest = this.client.prepareBulk();
-		for (Serializable source : sources) {
+		for (Object source : sources) {
 			IndexRequestBuilder request = this.client.prepareIndex(index, type).setSource(toMap(source));
 			bulkRequest.add(request);
 		}
-		BulkResponse bulkResponse = bulkRequest.get();
-		for (BulkItemResponse bulkItemResponse : bulkResponse.getItems()) {
-			result.add(bulkItemResponse.getId());
+		return executeBulkRequestBuilder(bulkRequest);
+	}
+
+	@Override
+	public Map<String, Object> get(String... ids) {
+		Map<String, Object> result = new HashMap<>();
+		MultiGetRequestBuilder multiGetRequestBuilder = this.client.prepareMultiGet().add(index, type, ids);
+		MultiGetResponse multiGetResponse = multiGetRequestBuilder.get();
+		for (MultiGetItemResponse response : multiGetResponse.getResponses()) {
+			result.put(response.getId(), response.getResponse().getSource());
 		}
-		return result.toArray(new String[result.size()]);
+		return result;
 	}
 
 	@Override
-	public Map<String, ?>[] get(String... id) {
-		// TODO Auto-generated method stub
-		return null;
+	public Map<String, String> remove(String... ids) {
+		BulkRequestBuilder bulkRequest = this.client.prepareBulk();
+		for (String id : ids) {
+			bulkRequest.add(this.client.prepareDelete(index, type, id));
+		}
+		return executeBulkRequestBuilder(bulkRequest);
 	}
 
 	@Override
-	public void remove(String... id) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Boolean update(final String id, final Serializable source) {
+	public Boolean update(final String id, final Object source) {
 		if (StringUtils.isEmpty(id) || source == null) {
 			return false;
 		}
-		Map<String, String> result = this.update(new HashMap<String, Serializable>() {
+		Map<String, String> result = this.update(new HashMap<String, Object>() {
 			private static final long serialVersionUID = 1L;
 			{
 				put(id, source);
@@ -118,28 +123,57 @@ public class ESDaoImpl implements ESDao {
 	}
 
 	@Override
-	public Map<String, String> update(Map<String, Serializable> sources) {
+	public Map<String, String> update(Map<String, Object> sources) {
 		if (sources == null || sources.size() == 0) {
 			return null;
 		}
 		BulkRequestBuilder bulkRequest = this.client.prepareBulk();
-		for (Entry<String, Serializable> entry : sources.entrySet()) {
+		for (Entry<String, Object> entry : sources.entrySet()) {
 			String id = entry.getKey();
-			Serializable obj = entry.getValue();
+			Object obj = entry.getValue();
 			// 创建批量请求对象
 			UpdateRequestBuilder requestBuilder = this.client.prepareUpdate(index, type, id);
 			requestBuilder.setDoc(toMap(obj));
 			bulkRequest.add(requestBuilder);
 		}
-		Map<String, String> result = new HashMap<>();
-		for (BulkItemResponse response : bulkRequest.get().getItems()) {
-			if (response.isFailed()) {
-				result.put(response.getId(), response.getFailureMessage());
-			} else {
-				result.put(response.getId(), null);
+		return executeBulkRequestBuilder(bulkRequest);
+	}
+
+	@Override
+	public void list() {
+
+		SearchRequestBuilder requestBuilder = this.client.prepareSearch(index);
+		requestBuilder.setTypes(type);
+
+	}
+
+	public void list(Integer size, Integer from, Long timeout, Sort[] sorts) {
+		SearchRequestBuilder requestBuilder = this.client.prepareSearch(index);
+		requestBuilder.setTypes(type);
+		// 检索方式
+		requestBuilder.setSearchType(SearchType.DEFAULT);
+		// 开始条数
+		if (from != null) {
+			requestBuilder.setFrom(from);
+		}
+		// 记录数
+		if (size != null) {
+			requestBuilder.setSize(size);
+		}
+		// 查询时间
+		if (timeout != null) {
+			// 检索的最长时间
+			requestBuilder.setTimeout(new TimeValue(timeout));
+		}
+		//排序规则
+		if (sorts!=null) {
+			for (Sort sort : sorts) {
+				requestBuilder.addSort(sort.getField(), sort.getOrder());
 			}
 		}
-		return result;
+		
+		
+		
 	}
 
 	/**
@@ -149,7 +183,7 @@ public class ESDaoImpl implements ESDao {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private static Map<String, Object> toMap(Serializable source) {
+	private static Map<String, Object> toMap(Object source) {
 		Map<String, Object> m = null;
 		if (source instanceof Map) {
 			m = (Map<String, Object>) source;
@@ -157,6 +191,24 @@ public class ESDaoImpl implements ESDao {
 			m = ObjectUtil.toMap(source);
 		}
 		return m;
+	}
+
+	/**
+	 * 执行并返回结果集
+	 * 
+	 * @param bulkRequest
+	 * @return
+	 */
+	private static Map<String, String> executeBulkRequestBuilder(final BulkRequestBuilder bulkRequest) {
+		Map<String, String> result = new HashMap<>();
+		for (BulkItemResponse response : bulkRequest.get().getItems()) {
+			if (response.isFailed()) {
+				result.put(response.getId(), response.getFailureMessage());
+			} else {
+				result.put(response.getId(), null);
+			}
+		}
+		return result;
 	}
 
 }
