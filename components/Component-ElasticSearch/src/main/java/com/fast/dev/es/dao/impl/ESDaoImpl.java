@@ -2,18 +2,27 @@ package com.fast.dev.es.dao.impl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.PreDestroy;
 
+import org.elasticsearch.action.bulk.BulkItemResponse;
+import org.elasticsearch.action.bulk.BulkRequestBuilder;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequestBuilder;
+import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.update.UpdateRequestBuilder;
 import org.elasticsearch.client.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.fast.dev.es.dao.ESDao;
+import com.fast.dev.es.util.ObjectUtil;
 
 /**
  * ES的数据操作持久层
@@ -55,13 +64,29 @@ public class ESDaoImpl implements ESDao {
 	}
 
 	@Override
+	public boolean save(String id, Serializable source) {
+		if (StringUtils.isEmpty(id) || source == null) {
+			return false;
+		}
+		IndexResponse indexResponse = this.client.prepareIndex(index, type, id).setSource(toMap(source)).get();
+		return id.equals(indexResponse.getId());
+	}
+
+	@Override
 	public String[] save(Serializable... sources) {
 		if (sources == null) {
 			return null;
 		}
+		// 用于接收插入的数据id
 		List<String> result = new ArrayList<>();
-		for (Serializable obj : sources) {
-			IndexRequestBuilder indexRequestBuilder = indexRequestBuilder();
+		BulkRequestBuilder bulkRequest = this.client.prepareBulk();
+		for (Serializable source : sources) {
+			IndexRequestBuilder request = this.client.prepareIndex(index, type).setSource(toMap(source));
+			bulkRequest.add(request);
+		}
+		BulkResponse bulkResponse = bulkRequest.get();
+		for (BulkItemResponse bulkItemResponse : bulkResponse.getItems()) {
+			result.add(bulkItemResponse.getId());
 		}
 		return result.toArray(new String[result.size()]);
 	}
@@ -78,25 +103,60 @@ public class ESDaoImpl implements ESDao {
 
 	}
 
+	@Override
+	public Boolean update(final String id, final Serializable source) {
+		if (StringUtils.isEmpty(id) || source == null) {
+			return false;
+		}
+		Map<String, String> result = this.update(new HashMap<String, Serializable>() {
+			private static final long serialVersionUID = 1L;
+			{
+				put(id, source);
+			}
+		});
+		return result.containsKey(id) && result.get(id) == null;
+	}
+
+	@Override
+	public Map<String, String> update(Map<String, Serializable> sources) {
+		if (sources == null || sources.size() == 0) {
+			return null;
+		}
+		BulkRequestBuilder bulkRequest = this.client.prepareBulk();
+		for (Entry<String, Serializable> entry : sources.entrySet()) {
+			String id = entry.getKey();
+			Serializable obj = entry.getValue();
+			// 创建批量请求对象
+			UpdateRequestBuilder requestBuilder = this.client.prepareUpdate(index, type, id);
+			requestBuilder.setDoc(toMap(obj));
+			bulkRequest.add(requestBuilder);
+		}
+		Map<String, String> result = new HashMap<>();
+		for (BulkItemResponse response : bulkRequest.get().getItems()) {
+			if (response.isFailed()) {
+				result.put(response.getId(), response.getFailureMessage());
+			} else {
+				result.put(response.getId(), null);
+			}
+		}
+		return result;
+	}
+
 	/**
-	 * 取出请求创建
+	 * 转换为map对象
 	 * 
+	 * @param obj
 	 * @return
 	 */
-	private IndexRequestBuilder indexRequestBuilder() {
-		return this.client.prepareIndex(index, type);
-	}
-
-	@Override
-	public boolean update(String id, Serializable source) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean update(Map<String, Serializable> sources) {
-		// TODO Auto-generated method stub
-		return false;
+	@SuppressWarnings("unchecked")
+	private static Map<String, Object> toMap(Serializable source) {
+		Map<String, Object> m = null;
+		if (source instanceof Map) {
+			m = (Map<String, Object>) source;
+		} else {
+			m = ObjectUtil.toMap(source);
+		}
+		return m;
 	}
 
 }

@@ -13,15 +13,24 @@ public interface ESDao {
 	 * @param source
 	 * @return
 	 */
-	public boolean update(String id, Serializable source);
+	public Boolean update(String id, Serializable source);
 
 	/**
 	 * 批量更新
 	 * 
 	 * @param sources
+	 * @return 如果value有值则为具体失败的原因
+	 */
+	public Map<String, String> update(Map<String, Serializable> sources);
+
+	/**
+	 * 保存文档
+	 * 
+	 * @param id
+	 * @param sources
 	 * @return
 	 */
-	public boolean update(Map<String, Serializable> sources);
+	public boolean save(String id, Serializable source);
 
 	/**
 	 * 修改并保存对象
