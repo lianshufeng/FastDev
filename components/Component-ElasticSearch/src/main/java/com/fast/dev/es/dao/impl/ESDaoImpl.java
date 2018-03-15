@@ -1,6 +1,7 @@
 package com.fast.dev.es.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,7 @@ import org.springframework.util.StringUtils;
 import com.fast.dev.es.dao.ESDao;
 import com.fast.dev.es.query.QueryHighlight;
 import com.fast.dev.es.query.QueryLimit;
+import com.fast.dev.es.query.QueryMatch;
 import com.fast.dev.es.query.QueryPhrase;
 import com.fast.dev.es.query.QueryRecord;
 import com.fast.dev.es.query.QueryResult;
@@ -165,8 +167,8 @@ public class ESDaoImpl implements ESDao {
 	 * @param queryLimit
 	 */
 	@Override
-	public QueryResult list(QueryBuilder queryBuilder, QueryHighlight[] queryHighlights, QuerySort[] sorts,
-			QueryLimit queryLimit) {
+	public QueryResult list(QueryBuilder queryBuilder, Collection<QueryHighlight> queryHighlights,
+			Collection<QuerySort> sorts, QueryLimit queryLimit) {
 		// 创建查询请求对象
 		SearchRequestBuilder requestBuilder = this.client.prepareSearch(index);
 		requestBuilder.setTypes(type);
@@ -204,9 +206,9 @@ public class ESDaoImpl implements ESDao {
 	 * @return
 	 */
 	@Override
-	public QueryResult list(QueryPhrase[] queryPhrases, QueryHighlight[] queryHighlights, QuerySort[] sorts,
-			QueryLimit queryLimit) {
-		return this.list(getQueryPhrase(queryPhrases), queryHighlights, sorts, queryLimit);
+	public QueryResult list(QueryPhrase queryPhrase, Collection<QueryHighlight> queryHighlights,
+			Collection<QuerySort> sorts, QueryLimit queryLimit) {
+		return this.list(getQueryPhrase(queryPhrase), queryHighlights, sorts, queryLimit);
 	}
 
 	/**
@@ -228,18 +230,18 @@ public class ESDaoImpl implements ESDao {
 			// 源数据
 			queryRecord.setSource(searchHit.getSourceAsMap());
 			// 高亮规则
-			Map<String, String[]> highLightMap = new HashMap<>();
+			Map<String, Collection<String>> highLightMap = new HashMap<>();
 			for (Entry<String, HighlightField> entry : searchHit.getHighlightFields().entrySet()) {
 				List<String> fragments = new ArrayList<>();
 				for (Text fragment : entry.getValue().getFragments()) {
 					fragments.add(fragment.string());
 				}
-				highLightMap.put(entry.getKey(), fragments.toArray(new String[fragments.size()]));
+				highLightMap.put(entry.getKey(), fragments);
 			}
 			queryRecord.setHighLight(highLightMap);
 			queryRecords.add(queryRecord);
 		}
-		queryResult.setRecords(queryRecords.toArray(new QueryRecord[queryRecords.size()]));
+		queryResult.setRecords(queryRecords);
 		return queryResult;
 	}
 
@@ -249,18 +251,24 @@ public class ESDaoImpl implements ESDao {
 	 * @param requestBuilder
 	 * @param queryPhrases
 	 */
-	private static BoolQueryBuilder getQueryPhrase(final QueryPhrase[] queryPhrases) {
-		if (queryPhrases == null) {
-			return null;
+	private static QueryBuilder getQueryPhrase(final QueryPhrase queryPhrase) {
+		if (queryPhrase == null) {
+			return QueryBuilders.matchAllQuery();
 		}
 		// 批量查询对象
 		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 		// 查询
-		for (QueryPhrase queryPhrase : queryPhrases) {
+		for (QueryMatch queryMatch : queryPhrase.getQueryMatch()) {
 			// 短语匹配
-			MatchPhraseQueryBuilder queryBuilder = QueryBuilders.matchPhraseQuery(queryPhrase.getName(),
-					queryPhrase.getValue());
-			boolQueryBuilder.should(queryBuilder);
+			MatchPhraseQueryBuilder queryBuilder = QueryBuilders.matchPhraseQuery(queryMatch.getName(),
+					queryMatch.getValue());
+			if (queryPhrase.isAnd()) {
+				// and
+				boolQueryBuilder.must(queryBuilder);
+			} else {
+				// or
+				boolQueryBuilder.should(queryBuilder);
+			}
 		}
 		return boolQueryBuilder;
 	}
@@ -272,7 +280,7 @@ public class ESDaoImpl implements ESDao {
 	 * @param queryHighlight
 	 */
 	private static void setQueryHighlight(final SearchRequestBuilder requestBuilder,
-			final QueryHighlight[] queryHighlights) {
+			final Collection<QueryHighlight> queryHighlights) {
 		if (queryHighlights == null) {
 			return;
 		}
@@ -305,7 +313,7 @@ public class ESDaoImpl implements ESDao {
 	 * @param requestBuilder
 	 * @param sorts
 	 */
-	private static void setQuerySort(final SearchRequestBuilder requestBuilder, QuerySort[] sorts) {
+	private static void setQuerySort(final SearchRequestBuilder requestBuilder, Collection<QuerySort> sorts) {
 		if (sorts == null) {
 			return;
 		}

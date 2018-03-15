@@ -62,4 +62,15 @@ public class QueryLimit {
 		this.timeout = timeout;
 	}
 
+	public QueryLimit() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public QueryLimit(Integer size, Integer from, Long timeout) {
+		super();
+		this.size = size;
+		this.from = from;
+		this.timeout = timeout;
+	}
+
 }

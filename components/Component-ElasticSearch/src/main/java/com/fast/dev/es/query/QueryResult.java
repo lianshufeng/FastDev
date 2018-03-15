@@ -1,5 +1,7 @@
 package com.fast.dev.es.query;
 
+import java.util.Collection;
+
 /**
  * 查询结果集
  * 
@@ -13,7 +15,7 @@ public class QueryResult {
 	private long total;
 
 	// 查询记录
-	private QueryRecord[] records;
+	private Collection<QueryRecord> records;
 
 	/**
 	 * @return the total
@@ -30,18 +32,21 @@ public class QueryResult {
 		this.total = total;
 	}
 
-	/**
-	 * @return the records
-	 */
-	public QueryRecord[] getRecords() {
+	public Collection<QueryRecord> getRecords() {
 		return records;
 	}
 
-	/**
-	 * @param records
-	 *            the records to set
-	 */
-	public void setRecords(QueryRecord[] records) {
+	public void setRecords(Collection<QueryRecord> records) {
+		this.records = records;
+	}
+
+	public QueryResult() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public QueryResult(long total, Collection<QueryRecord> records) {
+		super();
+		this.total = total;
 		this.records = records;
 	}
 

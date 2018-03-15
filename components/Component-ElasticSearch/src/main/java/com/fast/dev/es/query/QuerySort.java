@@ -32,4 +32,14 @@ public class QuerySort {
 		this.order = order;
 	}
 
+	public QuerySort() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public QuerySort(String field, SortOrder order) {
+		super();
+		this.field = field;
+		this.order = order;
+	}
+
 }

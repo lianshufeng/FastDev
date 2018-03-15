@@ -1,5 +1,6 @@
 package com.fast.dev.es.query;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -14,35 +15,31 @@ public class QueryRecord {
 	// 数据源
 	private Map<String, Object> source;
 	// 高亮对象
-	private Map<String, String[]> highLight;
+	private Map<String, Collection<String>> highLight;
 
-	/**
-	 * @return the source
-	 */
 	public Map<String, Object> getSource() {
 		return source;
 	}
 
-	/**
-	 * @param source
-	 *            the source to set
-	 */
 	public void setSource(Map<String, Object> source) {
 		this.source = source;
 	}
 
-	/**
-	 * @return the highLight
-	 */
-	public Map<String, String[]> getHighLight() {
+	public Map<String, Collection<String>> getHighLight() {
 		return highLight;
 	}
 
-	/**
-	 * @param highLight
-	 *            the highLight to set
-	 */
-	public void setHighLight(Map<String, String[]> highLight) {
+	public void setHighLight(Map<String, Collection<String>> highLight) {
+		this.highLight = highLight;
+	}
+
+	public QueryRecord() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public QueryRecord(Map<String, Object> source, Map<String, Collection<String>> highLight) {
+		super();
+		this.source = source;
 		this.highLight = highLight;
 	}
 

@@ -1,5 +1,7 @@
 package com.fast.dev.es.query;
 
+import java.util.Collection;
+
 /**
  * 短语查询(模糊查询)
  * 
@@ -9,40 +11,36 @@ package com.fast.dev.es.query;
  *
  */
 public class QueryPhrase {
+	// 匹配集合
+	private Collection<QueryMatch> queryMatch;
 
-	// 字段名
-	private String name;
-	// 匹配的值
-	private Object value;
+	// 是否用and组合条件，否则用or
+	private boolean and;
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
+	public Collection<QueryMatch> getQueryMatch() {
+		return queryMatch;
 	}
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setQueryMatch(Collection<QueryMatch> queryMatch) {
+		this.queryMatch = queryMatch;
 	}
 
-	/**
-	 * @return the value
-	 */
-	public Object getValue() {
-		return value;
+	public boolean isAnd() {
+		return and;
 	}
 
-	/**
-	 * @param value
-	 *            the value to set
-	 */
-	public void setValue(Object value) {
-		this.value = value;
+	public void setAnd(boolean and) {
+		this.and = and;
+	}
+
+	public QueryPhrase(Collection<QueryMatch> queryMatch, boolean and) {
+		super();
+		this.queryMatch = queryMatch;
+		this.and = and;
+	}
+
+	public QueryPhrase() {
+		// TODO Auto-generated constructor stub
 	}
 
 }

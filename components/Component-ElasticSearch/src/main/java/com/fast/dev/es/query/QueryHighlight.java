@@ -61,4 +61,15 @@ public class QueryHighlight {
 		this.postTag = postTag;
 	}
 
+	public QueryHighlight() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public QueryHighlight(String fieldName, String preTag, String postTag) {
+		super();
+		this.fieldName = fieldName;
+		this.preTag = preTag;
+		this.postTag = postTag;
+	}
+
 }

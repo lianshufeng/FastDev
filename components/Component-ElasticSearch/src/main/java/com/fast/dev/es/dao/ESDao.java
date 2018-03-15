@@ -1,5 +1,6 @@
 package com.fast.dev.es.dao;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.elasticsearch.index.query.QueryBuilder;
@@ -75,8 +76,8 @@ public interface ESDao {
 	 *            分页限制
 	 * @return
 	 */
-	public QueryResult list(QueryPhrase[] queryPhrases, QueryHighlight[] queryHighlights, QuerySort[] sorts,
-			QueryLimit queryLimit);
+	public QueryResult list(QueryPhrase queryPhrase, Collection<QueryHighlight> queryHighlights,
+			Collection<QuerySort> sorts, QueryLimit queryLimit);
 
 	/**
 	 * 查询
@@ -88,7 +89,7 @@ public interface ESDao {
 	 * @param queryLimit
 	 * @return
 	 */
-	public QueryResult list(QueryBuilder queryBuilder, QueryHighlight[] queryHighlights, QuerySort[] sorts,
-			QueryLimit queryLimit);
+	public QueryResult list(QueryBuilder queryBuilder, Collection<QueryHighlight> queryHighlights,
+			Collection<QuerySort> sorts, QueryLimit queryLimit);
 
 }
