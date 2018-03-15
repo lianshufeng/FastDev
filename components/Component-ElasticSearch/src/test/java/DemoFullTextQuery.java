@@ -134,6 +134,7 @@ public class DemoFullTextQuery {
 		highlightBuilder.postTags("->");
 		requestBuilder.highlighter(highlightBuilder);
 
+		
 		requestBuilder.setQuery(QueryBuilders.matchPhraseQuery("info", "中国"));
 		SearchResponse responsebuilder = requestBuilder.get();
 		SearchHits searchHits = responsebuilder.getHits();

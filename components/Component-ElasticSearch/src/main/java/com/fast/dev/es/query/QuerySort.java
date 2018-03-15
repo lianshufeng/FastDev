@@ -10,8 +10,7 @@ import org.elasticsearch.search.sort.SortOrder;
  *
  *
  */
-public class Sort {
-
+public class QuerySort {
 	// 字段名
 	private String field;
 	// 排序条件

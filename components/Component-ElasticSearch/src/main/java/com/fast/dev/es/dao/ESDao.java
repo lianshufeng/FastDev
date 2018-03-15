@@ -2,6 +2,14 @@ package com.fast.dev.es.dao;
 
 import java.util.Map;
 
+import org.elasticsearch.index.query.QueryBuilder;
+
+import com.fast.dev.es.query.QueryHighlight;
+import com.fast.dev.es.query.QueryLimit;
+import com.fast.dev.es.query.QueryPhrase;
+import com.fast.dev.es.query.QueryResult;
+import com.fast.dev.es.query.QuerySort;
+
 public interface ESDao {
 
 	/**
@@ -35,7 +43,7 @@ public interface ESDao {
 	 * 修改并保存对象
 	 * 
 	 * @param source
-	 * @return
+	 * @return 如果非null则为失败原因
 	 */
 	public Map<String, String> save(Object... sources);
 
@@ -43,7 +51,7 @@ public interface ESDao {
 	 * 获取文档对象
 	 * 
 	 * @param id
-	 * @return
+	 * @return 失败返回 null
 	 */
 	public Map<String, Object> get(String... ids);
 
@@ -53,9 +61,34 @@ public interface ESDao {
 	 * @param id
 	 */
 	public Map<String, String> remove(String... ids);
-	
-	
-	public void list() ;
-	
+
+	/**
+	 * 分页查询
+	 * 
+	 * @param queryPhrases
+	 *            多条查询规则用or连接
+	 * @param queryHighlights
+	 *            高亮规则
+	 * @param sorts
+	 *            排序
+	 * @param queryLimit
+	 *            分页限制
+	 * @return
+	 */
+	public QueryResult list(QueryPhrase[] queryPhrases, QueryHighlight[] queryHighlights, QuerySort[] sorts,
+			QueryLimit queryLimit);
+
+	/**
+	 * 查询
+	 * 
+	 * @param queryBuilder
+	 *            自定义查询
+	 * @param queryHighlights
+	 * @param sorts
+	 * @param queryLimit
+	 * @return
+	 */
+	public QueryResult list(QueryBuilder queryBuilder, QueryHighlight[] queryHighlights, QuerySort[] sorts,
+			QueryLimit queryLimit);
 
 }

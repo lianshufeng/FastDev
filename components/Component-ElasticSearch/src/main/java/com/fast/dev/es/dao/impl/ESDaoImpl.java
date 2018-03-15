@@ -1,6 +1,8 @@
 package com.fast.dev.es.dao.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -14,17 +16,32 @@ import org.elasticsearch.action.get.MultiGetResponse;
 import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.action.update.UpdateRequestBuilder;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.text.Text;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.fast.dev.es.dao.ESDao;
-import com.fast.dev.es.query.Sort;
+import com.fast.dev.es.query.QueryHighlight;
+import com.fast.dev.es.query.QueryLimit;
+import com.fast.dev.es.query.QueryPhrase;
+import com.fast.dev.es.query.QueryRecord;
+import com.fast.dev.es.query.QueryResult;
+import com.fast.dev.es.query.QuerySort;
 import com.fast.dev.es.util.ObjectUtil;
 
 /**
@@ -139,19 +156,177 @@ public class ESDaoImpl implements ESDao {
 		return executeBulkRequestBuilder(bulkRequest);
 	}
 
+	/**
+	 * 自定义条件查询
+	 * 
+	 * @param queryBuilder
+	 * @param queryHighlights
+	 * @param sorts
+	 * @param queryLimit
+	 */
 	@Override
-	public void list() {
-
+	public QueryResult list(QueryBuilder queryBuilder, QueryHighlight[] queryHighlights, QuerySort[] sorts,
+			QueryLimit queryLimit) {
+		// 创建查询请求对象
 		SearchRequestBuilder requestBuilder = this.client.prepareSearch(index);
 		requestBuilder.setTypes(type);
+
+		// 检索方式
+		requestBuilder.setSearchType(SearchType.DEFAULT);
+
+		// 设置查询条件
+		setQueryLimit(requestBuilder, queryLimit);
+
+		// 设置排序规则
+		setQuerySort(requestBuilder, sorts);
+
+		// 设置高亮
+		setQueryHighlight(requestBuilder, queryHighlights);
+
+		// 设置查询
+		requestBuilder.setQuery(queryBuilder);
+
+		// 执行查询
+		return executeQuery(requestBuilder);
+	}
+
+	/**
+	 * 查询
+	 * 
+	 * @param queryPhrases
+	 *            短语匹配查询，多条用or连接
+	 * @param queryHighlights
+	 *            高亮规则
+	 * @param sorts
+	 *            排序
+	 * @param queryLimit
+	 *            限制结果
+	 * @return
+	 */
+	@Override
+	public QueryResult list(QueryPhrase[] queryPhrases, QueryHighlight[] queryHighlights, QuerySort[] sorts,
+			QueryLimit queryLimit) {
+		return this.list(getQueryPhrase(queryPhrases), queryHighlights, sorts, queryLimit);
+	}
+
+	/**
+	 * 执行查询
+	 * 
+	 * @param requestBuilder
+	 * @return
+	 */
+	private QueryResult executeQuery(final SearchRequestBuilder requestBuilder) {
+		SearchResponse responsebuilder = requestBuilder.get();
+		SearchHits searchHits = responsebuilder.getHits();
+		QueryResult queryResult = new QueryResult();
+		// 总量
+		queryResult.setTotal(searchHits.getTotalHits());
+		List<QueryRecord> queryRecords = new ArrayList<>();
+		// 循环所有记录
+		for (SearchHit searchHit : searchHits.getHits()) {
+			QueryRecord queryRecord = new QueryRecord();
+			// 源数据
+			queryRecord.setSource(searchHit.getSourceAsMap());
+			// 高亮规则
+			Map<String, String[]> highLightMap = new HashMap<>();
+			for (Entry<String, HighlightField> entry : searchHit.getHighlightFields().entrySet()) {
+				List<String> fragments = new ArrayList<>();
+				for (Text fragment : entry.getValue().getFragments()) {
+					fragments.add(fragment.string());
+				}
+				highLightMap.put(entry.getKey(), fragments.toArray(new String[fragments.size()]));
+			}
+			queryRecord.setHighLight(highLightMap);
+			queryRecords.add(queryRecord);
+		}
+		queryResult.setRecords(queryRecords.toArray(new QueryRecord[queryRecords.size()]));
+		return queryResult;
+	}
+
+	/**
+	 * 短语匹配,多条件用or连接
+	 * 
+	 * @param requestBuilder
+	 * @param queryPhrases
+	 */
+	private static BoolQueryBuilder getQueryPhrase(final QueryPhrase[] queryPhrases) {
+		if (queryPhrases == null) {
+			return null;
+		}
+		// 批量查询对象
+		BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+		// 查询
+		for (QueryPhrase queryPhrase : queryPhrases) {
+			// 短语匹配
+			MatchPhraseQueryBuilder queryBuilder = QueryBuilders.matchPhraseQuery(queryPhrase.getName(),
+					queryPhrase.getValue());
+			boolQueryBuilder.should(queryBuilder);
+		}
+		return boolQueryBuilder;
+	}
+
+	/**
+	 * 设置高亮
+	 * 
+	 * @param requestBuilder
+	 * @param queryHighlight
+	 */
+	private static void setQueryHighlight(final SearchRequestBuilder requestBuilder,
+			final QueryHighlight[] queryHighlights) {
+		if (queryHighlights == null) {
+			return;
+		}
+		HighlightBuilder highlightBuilder = new HighlightBuilder();
+		List<String> preTags = new ArrayList<String>();
+		List<String> postTags = new ArrayList<String>();
+		for (QueryHighlight queryHighlight : queryHighlights) {
+			String fieldName = queryHighlight.getFieldName();
+			String preTag = queryHighlight.getPreTag();
+			String postTag = queryHighlight.getPostTag();
+			if (fieldName != null) {
+				highlightBuilder.field(fieldName);
+				preTags.add(preTag);
+				postTags.add(postTag);
+			}
+		}
+		if (preTags.size() > 0) {
+			highlightBuilder.preTags(preTags.toArray(new String[preTags.size()]));
+		}
+		if (postTags.size() > 0) {
+			highlightBuilder.postTags(postTags.toArray(new String[postTags.size()]));
+		}
+		requestBuilder.highlighter(highlightBuilder);
 
 	}
 
-	public void list(Integer size, Integer from, Long timeout, Sort[] sorts) {
-		SearchRequestBuilder requestBuilder = this.client.prepareSearch(index);
-		requestBuilder.setTypes(type);
-		// 检索方式
-		requestBuilder.setSearchType(SearchType.DEFAULT);
+	/**
+	 * 排序规则
+	 * 
+	 * @param requestBuilder
+	 * @param sorts
+	 */
+	private static void setQuerySort(final SearchRequestBuilder requestBuilder, QuerySort[] sorts) {
+		if (sorts == null) {
+			return;
+		}
+		for (QuerySort sort : sorts) {
+			requestBuilder.addSort(sort.getField(), sort.getOrder());
+		}
+	}
+
+	/**
+	 * 设置查询的限制条件 , 用于分页与限制最大耗时
+	 * 
+	 * @param requestBuilder
+	 * @param queryLimit
+	 */
+	private static void setQueryLimit(final SearchRequestBuilder requestBuilder, final QueryLimit queryLimit) {
+		if (queryLimit == null) {
+			return;
+		}
+		Integer from = queryLimit.getFrom();
+		Integer size = queryLimit.getSize();
+		Long timeout = queryLimit.getTimeout();
 		// 开始条数
 		if (from != null) {
 			requestBuilder.setFrom(from);
@@ -165,15 +340,7 @@ public class ESDaoImpl implements ESDao {
 			// 检索的最长时间
 			requestBuilder.setTimeout(new TimeValue(timeout));
 		}
-		//排序规则
-		if (sorts!=null) {
-			for (Sort sort : sorts) {
-				requestBuilder.addSort(sort.getField(), sort.getOrder());
-			}
-		}
-		
-		
-		
+
 	}
 
 	/**
