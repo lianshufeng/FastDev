@@ -12,6 +12,8 @@ import java.util.Map;
  *
  */
 public class QueryRecord {
+	// id
+	private String id;
 	// 数据源
 	private Map<String, Object> source;
 	// 高亮对象
@@ -33,12 +35,28 @@ public class QueryRecord {
 		this.highLight = highLight;
 	}
 
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * @param id
+	 *            the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
 	public QueryRecord() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public QueryRecord(Map<String, Object> source, Map<String, Collection<String>> highLight) {
+	public QueryRecord(String id, Map<String, Object> source, Map<String, Collection<String>> highLight) {
 		super();
+		this.id = id;
 		this.source = source;
 		this.highLight = highLight;
 	}

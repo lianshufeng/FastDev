@@ -10,10 +10,10 @@ package com.fast.dev.es.query;
  */
 public class QueryLimit {
 
-	// 查询数量
-	private Integer size;
 	// 查询开始记录数
 	private Integer from;
+	// 查询数量
+	private Integer size;
 	// 查询最大时常
 	private Long timeout;
 
@@ -66,7 +66,7 @@ public class QueryLimit {
 		// TODO Auto-generated constructor stub
 	}
 
-	public QueryLimit(Integer size, Integer from, Long timeout) {
+	public QueryLimit(Integer from, Integer size, Long timeout) {
 		super();
 		this.size = size;
 		this.from = from;

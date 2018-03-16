@@ -239,6 +239,7 @@ public class ESDaoImpl implements ESDao {
 				highLightMap.put(entry.getKey(), fragments);
 			}
 			queryRecord.setHighLight(highLightMap);
+			queryRecord.setId(searchHit.getId());
 			queryRecords.add(queryRecord);
 		}
 		queryResult.setRecords(queryRecords);
