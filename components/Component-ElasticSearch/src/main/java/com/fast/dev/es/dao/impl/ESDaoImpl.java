@@ -99,6 +99,10 @@ public class ESDaoImpl implements ESDao {
 		if (sources == null) {
 			return null;
 		}
+		if (sources.length == 0) {
+			return new HashMap<>();
+		}
+
 		BulkRequestBuilder bulkRequest = this.client.prepareBulk();
 		for (Object source : sources) {
 			IndexRequestBuilder request = this.client.prepareIndex(index, type).setSource(toMap(source));
@@ -109,6 +113,12 @@ public class ESDaoImpl implements ESDao {
 
 	@Override
 	public Map<String, Object> get(String... ids) {
+		if (ids == null) {
+			return null;
+		}
+		if (ids.length == 0) {
+			return new HashMap<>();
+		}
 		Map<String, Object> result = new HashMap<>();
 		MultiGetRequestBuilder multiGetRequestBuilder = this.client.prepareMultiGet().add(index, type, ids);
 		MultiGetResponse multiGetResponse = multiGetRequestBuilder.get();
@@ -120,6 +130,12 @@ public class ESDaoImpl implements ESDao {
 
 	@Override
 	public Map<String, String> remove(String... ids) {
+		if (ids == null) {
+			return null;
+		}
+		if (ids.length == 0) {
+			return new HashMap<>();
+		}
 		BulkRequestBuilder bulkRequest = this.client.prepareBulk();
 		for (String id : ids) {
 			bulkRequest.add(this.client.prepareDelete(index, type, id));
