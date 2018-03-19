@@ -24,6 +24,9 @@ public class ObjectUtil {
 	 * @throws InvocationTargetException
 	 */
 	public static Map<String, Object> toMap(Object obj) {
+		if (obj == null) {
+			System.out.println("duandian");
+		}
 		try {
 			return PropertyUtils.describe(obj);
 		} catch (Exception e) {

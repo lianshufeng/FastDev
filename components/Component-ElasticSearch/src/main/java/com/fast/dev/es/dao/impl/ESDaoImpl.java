@@ -105,8 +105,10 @@ public class ESDaoImpl implements ESDao {
 
 		BulkRequestBuilder bulkRequest = this.client.prepareBulk();
 		for (Object source : sources) {
-			IndexRequestBuilder request = this.client.prepareIndex(index, type).setSource(toMap(source));
-			bulkRequest.add(request);
+			if (source != null) {
+				IndexRequestBuilder request = this.client.prepareIndex(index, type).setSource(toMap(source));
+				bulkRequest.add(request);
+			}
 		}
 		return executeBulkRequestBuilder(bulkRequest);
 	}
