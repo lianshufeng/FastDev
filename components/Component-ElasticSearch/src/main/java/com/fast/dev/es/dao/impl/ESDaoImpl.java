@@ -383,6 +383,10 @@ public class ESDaoImpl implements ESDao {
 			m = (Map<String, Object>) source;
 		} else {
 			m = ObjectUtil.toMap(source);
+			// 不需要类名
+			if (m.containsKey("class")) {
+				m.remove("class");
+			}
 		}
 		return m;
 	}
