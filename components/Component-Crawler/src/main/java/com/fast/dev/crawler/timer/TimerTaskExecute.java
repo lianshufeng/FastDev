@@ -81,6 +81,10 @@ public class TimerTaskExecute implements Job {
 	private void callPageCrawler(PageCrawler crawler) {
 		String taskName = crawler.taskName();
 		List<UrlJob> sourcesUrls = crawler.pageUrls();
+		if (sourcesUrls == null) {
+			Log.info(String.format(" [%s] 未设置页面URL", taskName));
+			return;
+		}
 		if (this.taskRecordDao.exists(taskName)) {
 			// 如果已经执行过则只保留几条记录
 			sourcesUrls = crawler.repeat(sourcesUrls);
