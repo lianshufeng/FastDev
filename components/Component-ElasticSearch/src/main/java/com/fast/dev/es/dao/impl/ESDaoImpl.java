@@ -3,6 +3,7 @@ package com.fast.dev.es.dao.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -95,12 +96,12 @@ public class ESDaoImpl implements ESDao {
 	}
 
 	@Override
-	public Map<String, String> save(Object... sources) {
+	public LinkedHashMap<String, String> save(Object... sources) {
 		if (sources == null) {
 			return null;
 		}
 		if (sources.length == 0) {
-			return new HashMap<>();
+			return new LinkedHashMap<>();
 		}
 
 		BulkRequestBuilder bulkRequest = this.client.prepareBulk();
@@ -397,8 +398,8 @@ public class ESDaoImpl implements ESDao {
 	 * @param bulkRequest
 	 * @return
 	 */
-	private static Map<String, String> executeBulkRequestBuilder(final BulkRequestBuilder bulkRequest) {
-		Map<String, String> result = new HashMap<>();
+	private static LinkedHashMap<String, String> executeBulkRequestBuilder(final BulkRequestBuilder bulkRequest) {
+		LinkedHashMap<String, String> result = new LinkedHashMap<>();
 		for (BulkItemResponse response : bulkRequest.get().getItems()) {
 			if (response.isFailed()) {
 				result.put(response.getId(), response.getFailureMessage());

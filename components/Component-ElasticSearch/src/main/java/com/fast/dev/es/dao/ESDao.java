@@ -1,6 +1,7 @@
 package com.fast.dev.es.dao;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.elasticsearch.index.query.QueryBuilder;
@@ -46,7 +47,7 @@ public interface ESDao {
 	 * @param source
 	 * @return 如果非null则为失败原因
 	 */
-	public Map<String, String> save(Object... sources);
+	public LinkedHashMap<String, String> save(Object... sources);
 
 	/**
 	 * 获取文档对象
