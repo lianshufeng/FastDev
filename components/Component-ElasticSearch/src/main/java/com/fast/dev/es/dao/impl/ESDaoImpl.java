@@ -188,27 +188,7 @@ public class ESDaoImpl implements ESDao {
 	@Override
 	public QueryResult list(QueryBuilder queryBuilder, Collection<QueryHighlight> queryHighlights,
 			Collection<QuerySort> sorts, QueryLimit queryLimit) {
-		// 创建查询请求对象
-		SearchRequestBuilder requestBuilder = this.client.prepareSearch(index);
-		requestBuilder.setTypes(type);
-
-		// 检索方式
-		requestBuilder.setSearchType(SearchType.DEFAULT);
-
-		// 设置查询条件
-		setQueryLimit(requestBuilder, queryLimit);
-
-		// 设置排序规则
-		setQuerySort(requestBuilder, sorts);
-
-		// 设置高亮
-		setQueryHighlight(requestBuilder, queryHighlights);
-
-		// 设置查询
-		requestBuilder.setQuery(queryBuilder);
-
-		// 执行查询
-		return executeQuery(requestBuilder);
+		return list(queryBuilder, 40, queryHighlights, sorts, queryLimit);
 	}
 
 	/**
@@ -228,6 +208,32 @@ public class ESDaoImpl implements ESDao {
 	public QueryResult list(QueryPhrase queryPhrase, Collection<QueryHighlight> queryHighlights,
 			Collection<QuerySort> sorts, QueryLimit queryLimit) {
 		return this.list(getQueryPhrase(queryPhrase), queryHighlights, sorts, queryLimit);
+	}
+
+	@Override
+	public QueryResult list(QueryBuilder queryBuilder, int fragmentSize, Collection<QueryHighlight> queryHighlights,
+			Collection<QuerySort> sorts, QueryLimit queryLimit) {
+		// 创建查询请求对象
+		SearchRequestBuilder requestBuilder = this.client.prepareSearch(index);
+		requestBuilder.setTypes(type);
+
+		// 检索方式
+		requestBuilder.setSearchType(SearchType.DEFAULT);
+
+		// 设置查询条件
+		setQueryLimit(requestBuilder, queryLimit);
+
+		// 设置排序规则
+		setQuerySort(requestBuilder, sorts);
+
+		// 设置高亮
+		setQueryHighlight(requestBuilder, fragmentSize, queryHighlights);
+
+		// 设置查询
+		requestBuilder.setQuery(queryBuilder);
+
+		// 执行查询
+		return executeQuery(requestBuilder);
 	}
 
 	/**
@@ -299,12 +305,13 @@ public class ESDaoImpl implements ESDao {
 	 * @param requestBuilder
 	 * @param queryHighlight
 	 */
-	private static void setQueryHighlight(final SearchRequestBuilder requestBuilder,
+	private static void setQueryHighlight(final SearchRequestBuilder requestBuilder, int fragmentSize,
 			final Collection<QueryHighlight> queryHighlights) {
 		if (queryHighlights == null) {
 			return;
 		}
 		HighlightBuilder highlightBuilder = new HighlightBuilder();
+		highlightBuilder.fragmentSize(fragmentSize);
 		List<String> preTags = new ArrayList<String>();
 		List<String> postTags = new ArrayList<String>();
 		for (QueryHighlight queryHighlight : queryHighlights) {

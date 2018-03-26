@@ -93,4 +93,17 @@ public interface ESDao {
 	public QueryResult list(QueryBuilder queryBuilder, Collection<QueryHighlight> queryHighlights,
 			Collection<QuerySort> sorts, QueryLimit queryLimit);
 
+	/**
+	 * 
+	 * @param queryBuilder
+	 * @param highlightSize
+	 *            自定义高亮长度
+	 * @param queryHighlights
+	 * @param sorts
+	 * @param queryLimit
+	 * @return
+	 */
+	public QueryResult list(QueryBuilder queryBuilder, int fragmentSize, Collection<QueryHighlight> queryHighlights,
+			Collection<QuerySort> sorts, QueryLimit queryLimit);
+
 }

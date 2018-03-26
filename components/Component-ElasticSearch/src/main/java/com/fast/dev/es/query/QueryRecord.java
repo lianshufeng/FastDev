@@ -54,11 +54,4 @@ public class QueryRecord {
 		// TODO Auto-generated constructor stub
 	}
 
-	public QueryRecord(String id, Map<String, Object> source, Map<String, Collection<String>> highLight) {
-		super();
-		this.id = id;
-		this.source = source;
-		this.highLight = highLight;
-	}
-
 }
