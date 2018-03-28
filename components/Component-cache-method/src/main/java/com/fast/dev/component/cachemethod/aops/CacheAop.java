@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.annotation.PreDestroy;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -268,7 +270,7 @@ public class CacheAop {
 	 * @param collectionName
 	 * @return
 	 */
-	private Ehcache getCache(CacheMethodModel cacheMethodModel) {
+	private synchronized Ehcache getCache(CacheMethodModel cacheMethodModel) {
 		String collectionName = cacheMethodModel.getCollectionName();
 		Ehcache cache = this.collectionCache.get(collectionName);
 		if (cache == null) {
@@ -309,6 +311,11 @@ public class CacheAop {
 			this.methodFinderCache.put(index, method);
 		}
 		return method;
+	}
+
+	@PreDestroy
+	private void shutdown() {
+		cacheManager.shutdown();
 	}
 
 }
