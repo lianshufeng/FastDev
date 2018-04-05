@@ -64,6 +64,9 @@ public class InstallAutoDeployment {
 
 	// 初始化线程池
 	private void initThread() {
+		if (projectMoudels.size() == 0) {
+			return;
+		}
 		// 实例化线程池
 		this.executorService = Executors.newFixedThreadPool(projectMoudels.size());
 		// 监视模块更新
@@ -97,25 +100,26 @@ public class InstallAutoDeployment {
 	private void initProject() throws IOException {
 		// 项目名称
 		File[] projectNames = readProjects();
-		for (File f : projectNames) {
-			// 如果该项目打开状态则推出后
-			boolean isClose = !new File(f.getAbsolutePath() + "/org.eclipse.jdt.core/state.dat").exists();
-			if (!isClose) {
-				continue;
-			}
-			File locationFile = new File(f.getAbsolutePath() + "/.location");
-			String location = null;
-			if (locationFile.exists()) {
-				location = readLocationFile(locationFile);
-			} else if (new File(this.projectPath + "/" + f.getName() + "/pom.xml").exists()) {
-				location = this.projectPath + "/" + f.getName();
-			}
-			// 添加有效项目
-			if (location != null) {
-				projectMoudels.add(new ProjectMoudel(f.getName(), location));
+		if (projectNames != null) {
+			for (File f : projectNames) {
+				// 如果该项目打开状态则推出后
+				boolean isClose = !new File(f.getAbsolutePath() + "/org.eclipse.jdt.core/state.dat").exists();
+				if (!isClose) {
+					continue;
+				}
+				File locationFile = new File(f.getAbsolutePath() + "/.location");
+				String location = null;
+				if (locationFile.exists()) {
+					location = readLocationFile(locationFile);
+				} else if (new File(this.projectPath + "/" + f.getName() + "/pom.xml").exists()) {
+					location = this.projectPath + "/" + f.getName();
+				}
+				// 添加有效项目
+				if (location != null) {
+					projectMoudels.add(new ProjectMoudel(f.getName(), location));
+				}
 			}
 		}
-
 	}
 
 	/**
