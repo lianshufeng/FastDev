@@ -33,6 +33,17 @@ public interface ESDao {
 	public Map<String, String> update(Map<String, Object> sources);
 
 	/**
+	 * 更新数据
+	 * 
+	 * @param fieldName
+	 *            字段名
+	 * @param sources
+	 *            修改数据
+	 * @return
+	 */
+	public Map<String, String> find(String fieldName, String... values);
+
+	/**
 	 * 保存文档
 	 * 
 	 * @param id

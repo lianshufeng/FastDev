@@ -177,6 +177,28 @@ public class ESDaoImpl implements ESDao {
 		return executeBulkRequestBuilder(bulkRequest);
 	}
 
+	@Override
+	public Map<String, String> find(String fieldName, String... values) {
+		SearchRequestBuilder requestBuilder = this.client.prepareSearch(index);
+		requestBuilder.setTypes(type);
+		// 查询条件
+		BoolQueryBuilder queryBuilder = new BoolQueryBuilder();
+		for (String value : values) {
+			queryBuilder.should(QueryBuilders.termsQuery(fieldName, value));
+		}
+
+		// 检索方式
+		requestBuilder.setSearchType(SearchType.DEFAULT);
+		requestBuilder.setQuery(queryBuilder);
+
+		Map<String, String> result = new HashMap<>();
+		QueryResult queryResult = executeQuery(requestBuilder);
+		for (QueryRecord queryRecord : queryResult.getRecords()) {
+			result.put(String.valueOf(queryRecord.getSource().get(fieldName)), queryRecord.getId());
+		}
+		return result;
+	}
+
 	/**
 	 * 自定义条件查询
 	 * 
